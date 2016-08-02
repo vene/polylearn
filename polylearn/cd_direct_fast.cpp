@@ -1333,8 +1333,8 @@ static PyObject *indirect = 0;
 static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *, __Pyx_memviewslice, Py_ssize_t, double *, Py_ssize_t, unsigned int); /*proto*/
-static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *, double *, int, double, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *, double *, double *, unsigned int, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__Pyx_memviewslice, Py_ssize_t, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, double *, double *, unsigned int, double, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *); /*proto*/
+static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *, double *, int, double, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *, double *, double *, unsigned int, double, double, double *); /*proto*/
+static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__Pyx_memviewslice, Py_ssize_t, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, double *, double *, unsigned int, double, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *, double *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1395,6 +1395,7 @@ static char __pyx_k_obj[] = "obj";
 static char __pyx_k_tol[] = "tol";
 static char __pyx_k_base[] = "base";
 static char __pyx_k_beta[] = "beta";
+static char __pyx_k_grad[] = "grad";
 static char __pyx_k_lams[] = "lams";
 static char __pyx_k_loss[] = "loss";
 static char __pyx_k_main[] = "__main__";
@@ -1524,6 +1525,7 @@ static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
 static PyObject *__pyx_kp_s_got_differing_extents_in_dimensi;
+static PyObject *__pyx_n_s_grad;
 static PyObject *__pyx_kp_s_home_vlad_code_polylearn_polyle;
 static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
@@ -1628,7 +1630,7 @@ static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__20;
 static PyObject *__pyx_codeobj__15;
 
-/* "polylearn/cd_direct_fast.pyx":19
+/* "polylearn/cd_direct_fast.pyx":20
  * 
  * 
  * cdef void _precompute(ColumnDataset X,             # <<<<<<<<<<<<<<
@@ -1656,7 +1658,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
   Py_ssize_t __pyx_t_8;
   __Pyx_RefNannySetupContext("_precompute", 0);
 
-  /* "polylearn/cd_direct_fast.pyx":26
+  /* "polylearn/cd_direct_fast.pyx":27
  *                       unsigned int degree):
  * 
  *     cdef Py_ssize_t n_samples = X.get_n_samples()             # <<<<<<<<<<<<<<
@@ -1665,7 +1667,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
  */
   __pyx_v_n_samples = ((struct __pyx_vtabstruct_9lightning_4impl_12dataset_fast_ColumnDataset *)__pyx_v_X->__pyx_base.__pyx_vtab)->__pyx_base.get_n_samples(((struct __pyx_obj_9lightning_4impl_12dataset_fast_Dataset *)__pyx_v_X), 0);
 
-  /* "polylearn/cd_direct_fast.pyx":27
+  /* "polylearn/cd_direct_fast.pyx":28
  * 
  *     cdef Py_ssize_t n_samples = X.get_n_samples()
  *     cdef Py_ssize_t n_features = P.shape[2]             # <<<<<<<<<<<<<<
@@ -1674,7 +1676,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
  */
   __pyx_v_n_features = (__pyx_v_P.shape[2]);
 
-  /* "polylearn/cd_direct_fast.pyx":36
+  /* "polylearn/cd_direct_fast.pyx":37
  *     cdef Py_ssize_t i, j, ii
  * 
  *     for i in range(n_samples):             # <<<<<<<<<<<<<<
@@ -1685,7 +1687,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "polylearn/cd_direct_fast.pyx":37
+    /* "polylearn/cd_direct_fast.pyx":38
  * 
  *     for i in range(n_samples):
  *         out[i] = 0             # <<<<<<<<<<<<<<
@@ -1695,7 +1697,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
     (__pyx_v_out[__pyx_v_i]) = 0.0;
   }
 
-  /* "polylearn/cd_direct_fast.pyx":39
+  /* "polylearn/cd_direct_fast.pyx":40
  *         out[i] = 0
  * 
  *     for j in range(n_features):             # <<<<<<<<<<<<<<
@@ -1706,7 +1708,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "polylearn/cd_direct_fast.pyx":40
+    /* "polylearn/cd_direct_fast.pyx":41
  * 
  *     for j in range(n_features):
  *         X.get_column_ptr(j, &indices, &data, &n_nz)             # <<<<<<<<<<<<<<
@@ -1715,7 +1717,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
  */
     ((struct __pyx_vtabstruct_9lightning_4impl_12dataset_fast_ColumnDataset *)__pyx_v_X->__pyx_base.__pyx_vtab)->get_column_ptr(__pyx_v_X, __pyx_v_j, (&__pyx_v_indices), (&__pyx_v_data), (&__pyx_v_n_nz));
 
-    /* "polylearn/cd_direct_fast.pyx":41
+    /* "polylearn/cd_direct_fast.pyx":42
  *     for j in range(n_features):
  *         X.get_column_ptr(j, &indices, &data, &n_nz)
  *         for ii in range(n_nz):             # <<<<<<<<<<<<<<
@@ -1726,7 +1728,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_ii = __pyx_t_4;
 
-      /* "polylearn/cd_direct_fast.pyx":42
+      /* "polylearn/cd_direct_fast.pyx":43
  *         X.get_column_ptr(j, &indices, &data, &n_nz)
  *         for ii in range(n_nz):
  *             i = indices[ii]             # <<<<<<<<<<<<<<
@@ -1735,7 +1737,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
  */
       __pyx_v_i = (__pyx_v_indices[__pyx_v_ii]);
 
-      /* "polylearn/cd_direct_fast.pyx":43
+      /* "polylearn/cd_direct_fast.pyx":44
  *         for ii in range(n_nz):
  *             i = indices[ii]
  *             out[i] += (data[ii] * P[order, s, j]) ** degree             # <<<<<<<<<<<<<<
@@ -1750,7 +1752,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
     }
   }
 
-  /* "polylearn/cd_direct_fast.pyx":19
+  /* "polylearn/cd_direct_fast.pyx":20
  * 
  * 
  * cdef void _precompute(ColumnDataset X,             # <<<<<<<<<<<<<<
@@ -1762,7 +1764,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
   __Pyx_RefNannyFinishContext();
 }
 
-/* "polylearn/cd_direct_fast.pyx":46
+/* "polylearn/cd_direct_fast.pyx":47
  * 
  * 
  * cdef inline double _update(int* indices,             # <<<<<<<<<<<<<<
@@ -1770,7 +1772,7 @@ static void __pyx_f_9polylearn_14cd_direct_fast__precompute(struct __pyx_obj_9li
  *                            int n_nz,
  */
 
-static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__pyx_v_indices, double *__pyx_v_data, int __pyx_v_n_nz, double __pyx_v_p_js, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss, double *__pyx_v_d1, double *__pyx_v_d2, unsigned int __pyx_v_degree, double __pyx_v_lam, double __pyx_v_beta) {
+static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__pyx_v_indices, double *__pyx_v_data, int __pyx_v_n_nz, double __pyx_v_p_js, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss, double *__pyx_v_d1, double *__pyx_v_d2, unsigned int __pyx_v_degree, double __pyx_v_lam, double __pyx_v_beta, double *__pyx_v_grad_out) {
   double __pyx_v_l1_reg;
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_ii;
@@ -1785,8 +1787,8 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
   Py_ssize_t __pyx_t_4;
   __Pyx_RefNannySetupContext("_update", 0);
 
-  /* "polylearn/cd_direct_fast.pyx":59
- *                            double beta):
+  /* "polylearn/cd_direct_fast.pyx":61
+ *                            double* grad_out):
  * 
  *     cdef double l1_reg = 2 * beta * fabs(lam)             # <<<<<<<<<<<<<<
  * 
@@ -1794,7 +1796,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_l1_reg = ((2.0 * __pyx_v_beta) * fabs(__pyx_v_lam));
 
-  /* "polylearn/cd_direct_fast.pyx":63
+  /* "polylearn/cd_direct_fast.pyx":65
  *     cdef Py_ssize_t i, ii
  * 
  *     cdef double inv_step_size = 0             # <<<<<<<<<<<<<<
@@ -1803,7 +1805,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_inv_step_size = 0.0;
 
-  /* "polylearn/cd_direct_fast.pyx":66
+  /* "polylearn/cd_direct_fast.pyx":68
  * 
  *     cdef double grad_y
  *     cdef double update = 0             # <<<<<<<<<<<<<<
@@ -1812,7 +1814,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_update = 0.0;
 
-  /* "polylearn/cd_direct_fast.pyx":68
+  /* "polylearn/cd_direct_fast.pyx":70
  *     cdef double update = 0
  * 
  *     for ii in range(n_nz):             # <<<<<<<<<<<<<<
@@ -1823,7 +1825,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_ii = __pyx_t_2;
 
-    /* "polylearn/cd_direct_fast.pyx":69
+    /* "polylearn/cd_direct_fast.pyx":71
  * 
  *     for ii in range(n_nz):
  *         i = indices[ii]             # <<<<<<<<<<<<<<
@@ -1832,7 +1834,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
     __pyx_v_i = (__pyx_v_indices[__pyx_v_ii]);
 
-    /* "polylearn/cd_direct_fast.pyx":71
+    /* "polylearn/cd_direct_fast.pyx":73
  *         i = indices[ii]
  * 
  *         if degree == 2:             # <<<<<<<<<<<<<<
@@ -1842,7 +1844,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
     switch (__pyx_v_degree) {
       case 2:
 
-      /* "polylearn/cd_direct_fast.pyx":72
+      /* "polylearn/cd_direct_fast.pyx":74
  * 
  *         if degree == 2:
  *             grad_y = d1[i] - p_js * data[ii]             # <<<<<<<<<<<<<<
@@ -1851,7 +1853,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       __pyx_v_grad_y = ((__pyx_v_d1[__pyx_v_i]) - (__pyx_v_p_js * (__pyx_v_data[__pyx_v_ii])));
 
-      /* "polylearn/cd_direct_fast.pyx":71
+      /* "polylearn/cd_direct_fast.pyx":73
  *         i = indices[ii]
  * 
  *         if degree == 2:             # <<<<<<<<<<<<<<
@@ -1860,7 +1862,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       break;
 
-      /* "polylearn/cd_direct_fast.pyx":73
+      /* "polylearn/cd_direct_fast.pyx":75
  *         if degree == 2:
  *             grad_y = d1[i] - p_js * data[ii]
  *         elif degree == 3:             # <<<<<<<<<<<<<<
@@ -1869,7 +1871,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       case 3:
 
-      /* "polylearn/cd_direct_fast.pyx":74
+      /* "polylearn/cd_direct_fast.pyx":76
  *             grad_y = d1[i] - p_js * data[ii]
  *         elif degree == 3:
  *             grad_y = 0.5 * (d1[i] ** 2 - d2[i])             # <<<<<<<<<<<<<<
@@ -1878,7 +1880,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       __pyx_v_grad_y = (0.5 * (pow((__pyx_v_d1[__pyx_v_i]), 2.0) - (__pyx_v_d2[__pyx_v_i])));
 
-      /* "polylearn/cd_direct_fast.pyx":75
+      /* "polylearn/cd_direct_fast.pyx":77
  *         elif degree == 3:
  *             grad_y = 0.5 * (d1[i] ** 2 - d2[i])
  *             grad_y -= p_js * data[ii] * d1[i]             # <<<<<<<<<<<<<<
@@ -1887,7 +1889,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       __pyx_v_grad_y = (__pyx_v_grad_y - ((__pyx_v_p_js * (__pyx_v_data[__pyx_v_ii])) * (__pyx_v_d1[__pyx_v_i])));
 
-      /* "polylearn/cd_direct_fast.pyx":76
+      /* "polylearn/cd_direct_fast.pyx":78
  *             grad_y = 0.5 * (d1[i] ** 2 - d2[i])
  *             grad_y -= p_js * data[ii] * d1[i]
  *             grad_y += p_js ** 2 * data[ii] ** 2             # <<<<<<<<<<<<<<
@@ -1896,7 +1898,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
       __pyx_v_grad_y = (__pyx_v_grad_y + (pow(__pyx_v_p_js, 2.0) * pow((__pyx_v_data[__pyx_v_ii]), 2.0)));
 
-      /* "polylearn/cd_direct_fast.pyx":73
+      /* "polylearn/cd_direct_fast.pyx":75
  *         if degree == 2:
  *             grad_y = d1[i] - p_js * data[ii]
  *         elif degree == 3:             # <<<<<<<<<<<<<<
@@ -1907,17 +1909,26 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
       default: break;
     }
 
-    /* "polylearn/cd_direct_fast.pyx":78
+    /* "polylearn/cd_direct_fast.pyx":80
  *             grad_y += p_js ** 2 * data[ii] ** 2
  * 
  *         grad_y *= lam * data[ii]             # <<<<<<<<<<<<<<
+ *         grad_out[ii] = grad_y
  * 
- *         update += loss.dloss(y_pred[i], y[i]) * grad_y
  */
     __pyx_v_grad_y = (__pyx_v_grad_y * (__pyx_v_lam * (__pyx_v_data[__pyx_v_ii])));
 
-    /* "polylearn/cd_direct_fast.pyx":80
+    /* "polylearn/cd_direct_fast.pyx":81
+ * 
  *         grad_y *= lam * data[ii]
+ *         grad_out[ii] = grad_y             # <<<<<<<<<<<<<<
+ * 
+ *         update += loss.dloss(y_pred[i], y[i]) * grad_y
+ */
+    (__pyx_v_grad_out[__pyx_v_ii]) = __pyx_v_grad_y;
+
+    /* "polylearn/cd_direct_fast.pyx":83
+ *         grad_out[ii] = grad_y
  * 
  *         update += loss.dloss(y_pred[i], y[i]) * grad_y             # <<<<<<<<<<<<<<
  *         inv_step_size += grad_y ** 2
@@ -1927,7 +1938,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
     __pyx_t_4 = __pyx_v_i;
     __pyx_v_update = (__pyx_v_update + (((struct __pyx_vtabstruct_9polylearn_9loss_fast_LossFunction *)__pyx_v_loss->__pyx_vtab)->dloss(__pyx_v_loss, (*((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_3 * __pyx_v_y_pred.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_y.data + __pyx_t_4 * __pyx_v_y.strides[0]) )))) * __pyx_v_grad_y));
 
-    /* "polylearn/cd_direct_fast.pyx":81
+    /* "polylearn/cd_direct_fast.pyx":84
  * 
  *         update += loss.dloss(y_pred[i], y[i]) * grad_y
  *         inv_step_size += grad_y ** 2             # <<<<<<<<<<<<<<
@@ -1937,7 +1948,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
     __pyx_v_inv_step_size = (__pyx_v_inv_step_size + pow(__pyx_v_grad_y, 2.0));
   }
 
-  /* "polylearn/cd_direct_fast.pyx":83
+  /* "polylearn/cd_direct_fast.pyx":86
  *         inv_step_size += grad_y ** 2
  * 
  *     inv_step_size *= loss.mu             # <<<<<<<<<<<<<<
@@ -1946,7 +1957,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_inv_step_size = (__pyx_v_inv_step_size * __pyx_v_loss->mu);
 
-  /* "polylearn/cd_direct_fast.pyx":84
+  /* "polylearn/cd_direct_fast.pyx":87
  * 
  *     inv_step_size *= loss.mu
  *     inv_step_size += l1_reg             # <<<<<<<<<<<<<<
@@ -1955,7 +1966,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_inv_step_size = (__pyx_v_inv_step_size + __pyx_v_l1_reg);
 
-  /* "polylearn/cd_direct_fast.pyx":86
+  /* "polylearn/cd_direct_fast.pyx":89
  *     inv_step_size += l1_reg
  * 
  *     update += l1_reg * p_js             # <<<<<<<<<<<<<<
@@ -1964,7 +1975,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_update = (__pyx_v_update + (__pyx_v_l1_reg * __pyx_v_p_js));
 
-  /* "polylearn/cd_direct_fast.pyx":87
+  /* "polylearn/cd_direct_fast.pyx":90
  * 
  *     update += l1_reg * p_js
  *     update /= inv_step_size             # <<<<<<<<<<<<<<
@@ -1973,7 +1984,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  */
   __pyx_v_update = (__pyx_v_update / __pyx_v_inv_step_size);
 
-  /* "polylearn/cd_direct_fast.pyx":89
+  /* "polylearn/cd_direct_fast.pyx":92
  *     update /= inv_step_size
  * 
  *     return update             # <<<<<<<<<<<<<<
@@ -1983,7 +1994,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
   __pyx_r = __pyx_v_update;
   goto __pyx_L0;
 
-  /* "polylearn/cd_direct_fast.pyx":46
+  /* "polylearn/cd_direct_fast.pyx":47
  * 
  * 
  * cdef inline double _update(int* indices,             # <<<<<<<<<<<<<<
@@ -1997,7 +2008,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
   return __pyx_r;
 }
 
-/* "polylearn/cd_direct_fast.pyx":92
+/* "polylearn/cd_direct_fast.pyx":95
  * 
  * 
  * cdef inline double _cd_direct_epoch(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
@@ -2005,12 +2016,11 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__update(int *__p
  *                                     ColumnDataset X,
  */
 
-static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__Pyx_memviewslice __pyx_v_P, Py_ssize_t __pyx_v_order, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_lams, double *__pyx_v_d1, double *__pyx_v_d2, unsigned int __pyx_v_degree, double __pyx_v_beta, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss) {
+static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__Pyx_memviewslice __pyx_v_P, Py_ssize_t __pyx_v_order, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_lams, double *__pyx_v_d1, double *__pyx_v_d2, unsigned int __pyx_v_degree, double __pyx_v_beta, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss, double *__pyx_v_grad) {
   Py_ssize_t __pyx_v_s;
   Py_ssize_t __pyx_v_j;
   double __pyx_v_p_old;
   double __pyx_v_update;
-  double __pyx_v_offset;
   double __pyx_v_sum_viol;
   Py_ssize_t __pyx_v_n_components;
   Py_ssize_t __pyx_v_n_features;
@@ -2040,10 +2050,9 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
   Py_ssize_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
   Py_ssize_t __pyx_t_19;
-  Py_ssize_t __pyx_t_20;
   __Pyx_RefNannySetupContext("_cd_direct_epoch", 0);
 
-  /* "polylearn/cd_direct_fast.pyx":106
+  /* "polylearn/cd_direct_fast.pyx":110
  *     cdef Py_ssize_t s, j
  *     cdef double p_old, update, offset
  *     cdef double sum_viol = 0             # <<<<<<<<<<<<<<
@@ -2052,7 +2061,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
   __pyx_v_sum_viol = 0.0;
 
-  /* "polylearn/cd_direct_fast.pyx":107
+  /* "polylearn/cd_direct_fast.pyx":111
  *     cdef double p_old, update, offset
  *     cdef double sum_viol = 0
  *     cdef Py_ssize_t n_components = P.shape[1]             # <<<<<<<<<<<<<<
@@ -2061,7 +2070,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
   __pyx_v_n_components = (__pyx_v_P.shape[1]);
 
-  /* "polylearn/cd_direct_fast.pyx":108
+  /* "polylearn/cd_direct_fast.pyx":112
  *     cdef double sum_viol = 0
  *     cdef Py_ssize_t n_components = P.shape[1]
  *     cdef Py_ssize_t n_features = P.shape[2]             # <<<<<<<<<<<<<<
@@ -2070,7 +2079,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
   __pyx_v_n_features = (__pyx_v_P.shape[2]);
 
-  /* "polylearn/cd_direct_fast.pyx":115
+  /* "polylearn/cd_direct_fast.pyx":119
  *     cdef int n_nz
  * 
  *     for s in range(n_components):             # <<<<<<<<<<<<<<
@@ -2081,7 +2090,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_s = __pyx_t_2;
 
-    /* "polylearn/cd_direct_fast.pyx":118
+    /* "polylearn/cd_direct_fast.pyx":122
  * 
  *         # initialize the cached ds for this s
  *         _precompute(X, P, order, d1, s, 1)             # <<<<<<<<<<<<<<
@@ -2090,7 +2099,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
     __pyx_f_9polylearn_14cd_direct_fast__precompute(__pyx_v_X, __pyx_v_P, __pyx_v_order, __pyx_v_d1, __pyx_v_s, 1);
 
-    /* "polylearn/cd_direct_fast.pyx":119
+    /* "polylearn/cd_direct_fast.pyx":123
  *         # initialize the cached ds for this s
  *         _precompute(X, P, order, d1, s, 1)
  *         if degree == 3:             # <<<<<<<<<<<<<<
@@ -2100,7 +2109,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
     __pyx_t_3 = ((__pyx_v_degree == 3) != 0);
     if (__pyx_t_3) {
 
-      /* "polylearn/cd_direct_fast.pyx":120
+      /* "polylearn/cd_direct_fast.pyx":124
  *         _precompute(X, P, order, d1, s, 1)
  *         if degree == 3:
  *             _precompute(X, P, order, d2, s, 2)             # <<<<<<<<<<<<<<
@@ -2109,7 +2118,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
       __pyx_f_9polylearn_14cd_direct_fast__precompute(__pyx_v_X, __pyx_v_P, __pyx_v_order, __pyx_v_d2, __pyx_v_s, 2);
 
-      /* "polylearn/cd_direct_fast.pyx":119
+      /* "polylearn/cd_direct_fast.pyx":123
  *         # initialize the cached ds for this s
  *         _precompute(X, P, order, d1, s, 1)
  *         if degree == 3:             # <<<<<<<<<<<<<<
@@ -2118,7 +2127,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
     }
 
-    /* "polylearn/cd_direct_fast.pyx":122
+    /* "polylearn/cd_direct_fast.pyx":126
  *             _precompute(X, P, order, d2, s, 2)
  * 
  *         for j in range(n_features):             # <<<<<<<<<<<<<<
@@ -2129,7 +2138,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "polylearn/cd_direct_fast.pyx":124
+      /* "polylearn/cd_direct_fast.pyx":128
  *         for j in range(n_features):
  * 
  *             X.get_column_ptr(j, &indices, &data, &n_nz)             # <<<<<<<<<<<<<<
@@ -2138,39 +2147,39 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
       ((struct __pyx_vtabstruct_9lightning_4impl_12dataset_fast_ColumnDataset *)__pyx_v_X->__pyx_base.__pyx_vtab)->get_column_ptr(__pyx_v_X, __pyx_v_j, (&__pyx_v_indices), (&__pyx_v_data), (&__pyx_v_n_nz));
 
-      /* "polylearn/cd_direct_fast.pyx":127
+      /* "polylearn/cd_direct_fast.pyx":131
  * 
  *             # compute coordinate update
  *             p_old = P[order, s, j]             # <<<<<<<<<<<<<<
  *             update = _update(indices, data, n_nz, p_old, y, y_pred,
- *                              loss, d1, d2, degree, lams[s], beta)
+ *                              loss, d1, d2, degree, lams[s], beta, grad)
  */
       __pyx_t_6 = __pyx_v_order;
       __pyx_t_7 = __pyx_v_s;
       __pyx_t_8 = __pyx_v_j;
       __pyx_v_p_old = (*((double *) ( /* dim=2 */ ((char *) (((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_P.data + __pyx_t_6 * __pyx_v_P.strides[0]) ) + __pyx_t_7 * __pyx_v_P.strides[1]) )) + __pyx_t_8)) )));
 
-      /* "polylearn/cd_direct_fast.pyx":129
+      /* "polylearn/cd_direct_fast.pyx":133
  *             p_old = P[order, s, j]
  *             update = _update(indices, data, n_nz, p_old, y, y_pred,
- *                              loss, d1, d2, degree, lams[s], beta)             # <<<<<<<<<<<<<<
+ *                              loss, d1, d2, degree, lams[s], beta, grad)             # <<<<<<<<<<<<<<
  *             P[order, s, j] -= update
  *             sum_viol += fabs(update)
  */
       __pyx_t_9 = __pyx_v_s;
 
-      /* "polylearn/cd_direct_fast.pyx":128
+      /* "polylearn/cd_direct_fast.pyx":132
  *             # compute coordinate update
  *             p_old = P[order, s, j]
  *             update = _update(indices, data, n_nz, p_old, y, y_pred,             # <<<<<<<<<<<<<<
- *                              loss, d1, d2, degree, lams[s], beta)
+ *                              loss, d1, d2, degree, lams[s], beta, grad)
  *             P[order, s, j] -= update
  */
-      __pyx_v_update = __pyx_f_9polylearn_14cd_direct_fast__update(__pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_v_p_old, __pyx_v_y, __pyx_v_y_pred, __pyx_v_loss, __pyx_v_d1, __pyx_v_d2, __pyx_v_degree, (*((double *) ( /* dim=0 */ (__pyx_v_lams.data + __pyx_t_9 * __pyx_v_lams.strides[0]) ))), __pyx_v_beta);
+      __pyx_v_update = __pyx_f_9polylearn_14cd_direct_fast__update(__pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_v_p_old, __pyx_v_y, __pyx_v_y_pred, __pyx_v_loss, __pyx_v_d1, __pyx_v_d2, __pyx_v_degree, (*((double *) ( /* dim=0 */ (__pyx_v_lams.data + __pyx_t_9 * __pyx_v_lams.strides[0]) ))), __pyx_v_beta, __pyx_v_grad);
 
-      /* "polylearn/cd_direct_fast.pyx":130
+      /* "polylearn/cd_direct_fast.pyx":134
  *             update = _update(indices, data, n_nz, p_old, y, y_pred,
- *                              loss, d1, d2, degree, lams[s], beta)
+ *                              loss, d1, d2, degree, lams[s], beta, grad)
  *             P[order, s, j] -= update             # <<<<<<<<<<<<<<
  *             sum_viol += fabs(update)
  * 
@@ -2180,8 +2189,8 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
       __pyx_t_12 = __pyx_v_j;
       *((double *) ( /* dim=2 */ ((char *) (((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_P.data + __pyx_t_10 * __pyx_v_P.strides[0]) ) + __pyx_t_11 * __pyx_v_P.strides[1]) )) + __pyx_t_12)) )) -= __pyx_v_update;
 
-      /* "polylearn/cd_direct_fast.pyx":131
- *                              loss, d1, d2, degree, lams[s], beta)
+      /* "polylearn/cd_direct_fast.pyx":135
+ *                              loss, d1, d2, degree, lams[s], beta, grad)
  *             P[order, s, j] -= update
  *             sum_viol += fabs(update)             # <<<<<<<<<<<<<<
  * 
@@ -2189,95 +2198,39 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
  */
       __pyx_v_sum_viol = (__pyx_v_sum_viol + fabs(__pyx_v_update));
 
-      /* "polylearn/cd_direct_fast.pyx":134
+      /* "polylearn/cd_direct_fast.pyx":138
  * 
  *             # Synchronize predictions and ds
  *             for ii in range(n_nz):             # <<<<<<<<<<<<<<
  *                 i = indices[ii]
- *                 if degree == 2:
+ * 
  */
       __pyx_t_13 = __pyx_v_n_nz;
       for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
         __pyx_v_ii = __pyx_t_14;
 
-        /* "polylearn/cd_direct_fast.pyx":135
+        /* "polylearn/cd_direct_fast.pyx":139
  *             # Synchronize predictions and ds
  *             for ii in range(n_nz):
  *                 i = indices[ii]             # <<<<<<<<<<<<<<
- *                 if degree == 2:
- *                     offset = d1[i] - p_old * data[ii]
+ * 
+ *                 if degree == 3:
  */
         __pyx_v_i = (__pyx_v_indices[__pyx_v_ii]);
 
-        /* "polylearn/cd_direct_fast.pyx":136
- *             for ii in range(n_nz):
+        /* "polylearn/cd_direct_fast.pyx":141
  *                 i = indices[ii]
- *                 if degree == 2:             # <<<<<<<<<<<<<<
- *                     offset = d1[i] - p_old * data[ii]
- *                 else:
+ * 
+ *                 if degree == 3:             # <<<<<<<<<<<<<<
+ *                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
+ * 
  */
-        __pyx_t_3 = ((__pyx_v_degree == 2) != 0);
+        __pyx_t_3 = ((__pyx_v_degree == 3) != 0);
         if (__pyx_t_3) {
 
-          /* "polylearn/cd_direct_fast.pyx":137
- *                 i = indices[ii]
- *                 if degree == 2:
- *                     offset = d1[i] - p_old * data[ii]             # <<<<<<<<<<<<<<
- *                 else:
- *                     offset = d1[i] ** 2 - d2[i]
- */
-          __pyx_v_offset = ((__pyx_v_d1[__pyx_v_i]) - (__pyx_v_p_old * (__pyx_v_data[__pyx_v_ii])));
-
-          /* "polylearn/cd_direct_fast.pyx":136
- *             for ii in range(n_nz):
- *                 i = indices[ii]
- *                 if degree == 2:             # <<<<<<<<<<<<<<
- *                     offset = d1[i] - p_old * data[ii]
- *                 else:
- */
-          goto __pyx_L10;
-        }
-
-        /* "polylearn/cd_direct_fast.pyx":139
- *                     offset = d1[i] - p_old * data[ii]
- *                 else:
- *                     offset = d1[i] ** 2 - d2[i]             # <<<<<<<<<<<<<<
- *                     offset *= 0.5
- *                     offset -= p_old * data[ii] * d1[i]
- */
-        /*else*/ {
-          __pyx_v_offset = (pow((__pyx_v_d1[__pyx_v_i]), 2.0) - (__pyx_v_d2[__pyx_v_i]));
-
-          /* "polylearn/cd_direct_fast.pyx":140
- *                 else:
- *                     offset = d1[i] ** 2 - d2[i]
- *                     offset *= 0.5             # <<<<<<<<<<<<<<
- *                     offset -= p_old * data[ii] * d1[i]
- *                     offset += p_old ** 2 * data[ii] ** 2
- */
-          __pyx_v_offset = (__pyx_v_offset * 0.5);
-
-          /* "polylearn/cd_direct_fast.pyx":141
- *                     offset = d1[i] ** 2 - d2[i]
- *                     offset *= 0.5
- *                     offset -= p_old * data[ii] * d1[i]             # <<<<<<<<<<<<<<
- *                     offset += p_old ** 2 * data[ii] ** 2
- * 
- */
-          __pyx_v_offset = (__pyx_v_offset - ((__pyx_v_p_old * (__pyx_v_data[__pyx_v_ii])) * (__pyx_v_d1[__pyx_v_i])));
-
           /* "polylearn/cd_direct_fast.pyx":142
- *                     offset *= 0.5
- *                     offset -= p_old * data[ii] * d1[i]
- *                     offset += p_old ** 2 * data[ii] ** 2             # <<<<<<<<<<<<<<
  * 
- *                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
- */
-          __pyx_v_offset = (__pyx_v_offset + (pow(__pyx_v_p_old, 2.0) * pow((__pyx_v_data[__pyx_v_ii]), 2.0)));
-
-          /* "polylearn/cd_direct_fast.pyx":144
- *                     offset += p_old ** 2 * data[ii] ** 2
- * 
+ *                 if degree == 3:
  *                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2             # <<<<<<<<<<<<<<
  * 
  *                 d1[i] -= update * data[ii]
@@ -2287,36 +2240,42 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
           __pyx_t_17 = __pyx_v_s;
           __pyx_t_18 = __pyx_v_j;
           (__pyx_v_d2[__pyx_t_15]) = ((__pyx_v_d2[__pyx_t_15]) - ((pow(__pyx_v_p_old, 2.0) - pow((*((double *) ( /* dim=2 */ ((char *) (((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_P.data + __pyx_t_16 * __pyx_v_P.strides[0]) ) + __pyx_t_17 * __pyx_v_P.strides[1]) )) + __pyx_t_18)) ))), 2.0)) * pow((__pyx_v_data[__pyx_v_ii]), 2.0)));
-        }
-        __pyx_L10:;
 
-        /* "polylearn/cd_direct_fast.pyx":146
+          /* "polylearn/cd_direct_fast.pyx":141
+ *                 i = indices[ii]
+ * 
+ *                 if degree == 3:             # <<<<<<<<<<<<<<
+ *                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
+ * 
+ */
+        }
+
+        /* "polylearn/cd_direct_fast.pyx":144
  *                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
  * 
  *                 d1[i] -= update * data[ii]             # <<<<<<<<<<<<<<
- *                 y_pred[i] -= offset * lams[s] * update * data[ii]
+ *                 y_pred[i] -= update * grad[ii]
  *     return sum_viol
  */
         __pyx_t_15 = __pyx_v_i;
         (__pyx_v_d1[__pyx_t_15]) = ((__pyx_v_d1[__pyx_t_15]) - (__pyx_v_update * (__pyx_v_data[__pyx_v_ii])));
 
-        /* "polylearn/cd_direct_fast.pyx":147
+        /* "polylearn/cd_direct_fast.pyx":145
  * 
  *                 d1[i] -= update * data[ii]
- *                 y_pred[i] -= offset * lams[s] * update * data[ii]             # <<<<<<<<<<<<<<
+ *                 y_pred[i] -= update * grad[ii]             # <<<<<<<<<<<<<<
  *     return sum_viol
  * 
  */
-        __pyx_t_19 = __pyx_v_s;
-        __pyx_t_20 = __pyx_v_i;
-        *((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_20 * __pyx_v_y_pred.strides[0]) )) -= (((__pyx_v_offset * (*((double *) ( /* dim=0 */ (__pyx_v_lams.data + __pyx_t_19 * __pyx_v_lams.strides[0]) )))) * __pyx_v_update) * (__pyx_v_data[__pyx_v_ii]));
+        __pyx_t_19 = __pyx_v_i;
+        *((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_19 * __pyx_v_y_pred.strides[0]) )) -= (__pyx_v_update * (__pyx_v_grad[__pyx_v_ii]));
       }
     }
   }
 
-  /* "polylearn/cd_direct_fast.pyx":148
+  /* "polylearn/cd_direct_fast.pyx":146
  *                 d1[i] -= update * data[ii]
- *                 y_pred[i] -= offset * lams[s] * update * data[ii]
+ *                 y_pred[i] -= update * grad[ii]
  *     return sum_viol             # <<<<<<<<<<<<<<
  * 
  * 
@@ -2324,7 +2283,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
   __pyx_r = __pyx_v_sum_viol;
   goto __pyx_L0;
 
-  /* "polylearn/cd_direct_fast.pyx":92
+  /* "polylearn/cd_direct_fast.pyx":95
  * 
  * 
  * cdef inline double _cd_direct_epoch(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
@@ -2338,11 +2297,11 @@ static CYTHON_INLINE double __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch
   return __pyx_r;
 }
 
-/* "polylearn/cd_direct_fast.pyx":151
+/* "polylearn/cd_direct_fast.pyx":149
  * 
  * 
- * def _cd_direct_ho(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
- *                   double[:] w,
+ * def _cd_direct_ho(double[:, :, ::1] P not None,             # <<<<<<<<<<<<<<
+ *                   double[:] w not None,
  *                   ColumnDataset X,
  */
 
@@ -2406,81 +2365,81 @@ static PyObject *__pyx_pw_9polylearn_14cd_direct_fast_1_cd_direct_ho(PyObject *_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_w)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_X)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_col_norm_sq)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lams)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  7:
         if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_degree)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  8:
         if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_alpha)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  9:
         if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_beta)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 9); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 10:
         if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fit_linear)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 10); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 11:
         if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_fit_lower)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 11); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 12:
         if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_loss)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 12); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 13:
         if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_max_iter)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 13); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 14:
         if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tol)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 14); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case 15:
         if (likely((values[15] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_verbose)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 15); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, 15); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_cd_direct_ho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_cd_direct_ho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 16) {
       goto __pyx_L5_argtuple_error;
@@ -2502,33 +2461,51 @@ static PyObject *__pyx_pw_9polylearn_14cd_direct_fast_1_cd_direct_ho(PyObject *_
       values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
       values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
     }
-    __pyx_v_P = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_double(values[0]); if (unlikely(!__pyx_v_P.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_w = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1]); if (unlikely(!__pyx_v_w.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_P = __Pyx_PyObject_to_MemoryviewSlice_d_d_dc_double(values[0]); if (unlikely(!__pyx_v_P.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_w = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1]); if (unlikely(!__pyx_v_w.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_X = ((struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *)values[2]);
-    __pyx_v_col_norm_sq = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3]); if (unlikely(!__pyx_v_col_norm_sq.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_y = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4]); if (unlikely(!__pyx_v_y.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_y_pred = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5]); if (unlikely(!__pyx_v_y_pred.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_lams = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6]); if (unlikely(!__pyx_v_lams.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_degree = __Pyx_PyInt_As_unsigned_int(values[7]); if (unlikely((__pyx_v_degree == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_alpha = __pyx_PyFloat_AsDouble(values[8]); if (unlikely((__pyx_v_alpha == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_beta = __pyx_PyFloat_AsDouble(values[9]); if (unlikely((__pyx_v_beta == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_fit_linear = __Pyx_PyObject_IsTrue(values[10]); if (unlikely((__pyx_v_fit_linear == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_fit_lower = __Pyx_PyObject_IsTrue(values[11]); if (unlikely((__pyx_v_fit_lower == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_col_norm_sq = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3]); if (unlikely(!__pyx_v_col_norm_sq.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_y = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4]); if (unlikely(!__pyx_v_y.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_y_pred = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5]); if (unlikely(!__pyx_v_y_pred.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_lams = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6]); if (unlikely(!__pyx_v_lams.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_degree = __Pyx_PyInt_As_unsigned_int(values[7]); if (unlikely((__pyx_v_degree == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_alpha = __pyx_PyFloat_AsDouble(values[8]); if (unlikely((__pyx_v_alpha == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_beta = __pyx_PyFloat_AsDouble(values[9]); if (unlikely((__pyx_v_beta == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_fit_linear = __Pyx_PyObject_IsTrue(values[10]); if (unlikely((__pyx_v_fit_linear == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_fit_lower = __Pyx_PyObject_IsTrue(values[11]); if (unlikely((__pyx_v_fit_lower == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_loss = ((struct __pyx_obj_9polylearn_9loss_fast_LossFunction *)values[12]);
-    __pyx_v_max_iter = __Pyx_PyInt_As_unsigned_int(values[13]); if (unlikely((__pyx_v_max_iter == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_tol = __pyx_PyFloat_AsDouble(values[14]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_verbose = __Pyx_PyInt_As_int(values[15]); if (unlikely((__pyx_v_verbose == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_max_iter = __Pyx_PyInt_As_unsigned_int(values[13]); if (unlikely((__pyx_v_max_iter == (unsigned int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_tol = __pyx_PyFloat_AsDouble(values[14]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_verbose = __Pyx_PyInt_As_int(values[15]); if (unlikely((__pyx_v_verbose == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("_cd_direct_ho", 1, 16, 16, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("polylearn.cd_direct_fast._cd_direct_ho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_X), __pyx_ptype_9lightning_4impl_12dataset_fast_ColumnDataset, 1, "X", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), __pyx_ptype_9polylearn_9loss_fast_LossFunction, 1, "loss", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(((PyObject *)__pyx_v_P.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "P"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(((PyObject *)__pyx_v_w.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "w"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_X), __pyx_ptype_9lightning_4impl_12dataset_fast_ColumnDataset, 1, "X", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(((PyObject *)__pyx_v_col_norm_sq.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "col_norm_sq"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(((PyObject *)__pyx_v_y.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "y"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(((PyObject *)__pyx_v_y_pred.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "y_pred"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(((PyObject *)__pyx_v_lams.memview) == Py_None)) {
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "lams"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), __pyx_ptype_9polylearn_9loss_fast_LossFunction, 1, "loss", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(__pyx_self, __pyx_v_P, __pyx_v_w, __pyx_v_X, __pyx_v_col_norm_sq, __pyx_v_y, __pyx_v_y_pred, __pyx_v_lams, __pyx_v_degree, __pyx_v_alpha, __pyx_v_beta, __pyx_v_fit_linear, __pyx_v_fit_lower, __pyx_v_loss, __pyx_v_max_iter, __pyx_v_tol, __pyx_v_verbose);
 
   /* function exit code */
@@ -2547,6 +2524,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   int __pyx_v_converged;
   double *__pyx_v_d1;
   double *__pyx_v_d2;
+  double *__pyx_v_grad;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2561,7 +2539,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_cd_direct_ho", 0);
 
-  /* "polylearn/cd_direct_fast.pyx":168
+  /* "polylearn/cd_direct_fast.pyx":166
  *                   int verbose):
  * 
  *     cdef Py_ssize_t n_samples = X.get_n_samples()             # <<<<<<<<<<<<<<
@@ -2570,7 +2548,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
   __pyx_v_n_samples = ((struct __pyx_vtabstruct_9lightning_4impl_12dataset_fast_ColumnDataset *)__pyx_v_X->__pyx_base.__pyx_vtab)->__pyx_base.get_n_samples(((struct __pyx_obj_9lightning_4impl_12dataset_fast_Dataset *)__pyx_v_X), 0);
 
-  /* "polylearn/cd_direct_fast.pyx":172
+  /* "polylearn/cd_direct_fast.pyx":170
  * 
  *     cdef double viol
  *     cdef bint converged = False             # <<<<<<<<<<<<<<
@@ -2579,7 +2557,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
   __pyx_v_converged = 0;
 
-  /* "polylearn/cd_direct_fast.pyx":175
+  /* "polylearn/cd_direct_fast.pyx":173
  * 
  *     # precomputed values
  *     cdef double *d1 = <double *> malloc(n_samples * sizeof(double))             # <<<<<<<<<<<<<<
@@ -2588,36 +2566,45 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
   __pyx_v_d1 = ((double *)malloc((__pyx_v_n_samples * (sizeof(double)))));
 
-  /* "polylearn/cd_direct_fast.pyx":177
+  /* "polylearn/cd_direct_fast.pyx":175
  *     cdef double *d1 = <double *> malloc(n_samples * sizeof(double))
  *     cdef double *d2
  *     if degree == 3:             # <<<<<<<<<<<<<<
  *         d2 = <double *> malloc(n_samples * sizeof(double))
- * 
+ *     cdef double *grad = <double *> malloc(n_samples * sizeof(double))
  */
   __pyx_t_1 = ((__pyx_v_degree == 3) != 0);
   if (__pyx_t_1) {
 
-    /* "polylearn/cd_direct_fast.pyx":178
+    /* "polylearn/cd_direct_fast.pyx":176
  *     cdef double *d2
  *     if degree == 3:
  *         d2 = <double *> malloc(n_samples * sizeof(double))             # <<<<<<<<<<<<<<
+ *     cdef double *grad = <double *> malloc(n_samples * sizeof(double))
  * 
- *     for it in range(max_iter):
  */
     __pyx_v_d2 = ((double *)malloc((__pyx_v_n_samples * (sizeof(double)))));
 
-    /* "polylearn/cd_direct_fast.pyx":177
+    /* "polylearn/cd_direct_fast.pyx":175
  *     cdef double *d1 = <double *> malloc(n_samples * sizeof(double))
  *     cdef double *d2
  *     if degree == 3:             # <<<<<<<<<<<<<<
  *         d2 = <double *> malloc(n_samples * sizeof(double))
- * 
+ *     cdef double *grad = <double *> malloc(n_samples * sizeof(double))
  */
   }
 
-  /* "polylearn/cd_direct_fast.pyx":180
+  /* "polylearn/cd_direct_fast.pyx":177
+ *     if degree == 3:
  *         d2 = <double *> malloc(n_samples * sizeof(double))
+ *     cdef double *grad = <double *> malloc(n_samples * sizeof(double))             # <<<<<<<<<<<<<<
+ * 
+ *     for it in range(max_iter):
+ */
+  __pyx_v_grad = ((double *)malloc((__pyx_v_n_samples * (sizeof(double)))));
+
+  /* "polylearn/cd_direct_fast.pyx":179
+ *     cdef double *grad = <double *> malloc(n_samples * sizeof(double))
  * 
  *     for it in range(max_iter):             # <<<<<<<<<<<<<<
  *         viol = 0
@@ -2627,7 +2614,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_it = __pyx_t_3;
 
-    /* "polylearn/cd_direct_fast.pyx":181
+    /* "polylearn/cd_direct_fast.pyx":180
  * 
  *     for it in range(max_iter):
  *         viol = 0             # <<<<<<<<<<<<<<
@@ -2636,7 +2623,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
     __pyx_v_viol = 0.0;
 
-    /* "polylearn/cd_direct_fast.pyx":183
+    /* "polylearn/cd_direct_fast.pyx":182
  *         viol = 0
  * 
  *         if fit_linear:             # <<<<<<<<<<<<<<
@@ -2646,7 +2633,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
     __pyx_t_1 = (__pyx_v_fit_linear != 0);
     if (__pyx_t_1) {
 
-      /* "polylearn/cd_direct_fast.pyx":184
+      /* "polylearn/cd_direct_fast.pyx":183
  * 
  *         if fit_linear:
  *             viol += _cd_linear_epoch(w, X, y, y_pred, col_norm_sq, alpha, loss)             # <<<<<<<<<<<<<<
@@ -2655,7 +2642,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
       __pyx_v_viol = (__pyx_v_viol + __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__pyx_v_w, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_col_norm_sq, __pyx_v_alpha, __pyx_v_loss, 0));
 
-      /* "polylearn/cd_direct_fast.pyx":183
+      /* "polylearn/cd_direct_fast.pyx":182
  *         viol = 0
  * 
  *         if fit_linear:             # <<<<<<<<<<<<<<
@@ -2664,12 +2651,12 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
     }
 
-    /* "polylearn/cd_direct_fast.pyx":186
+    /* "polylearn/cd_direct_fast.pyx":185
  *             viol += _cd_linear_epoch(w, X, y, y_pred, col_norm_sq, alpha, loss)
  * 
  *         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.             # <<<<<<<<<<<<<<
  *             viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, d1, d2,
- *                                      2, beta, loss)
+ *                                      2, beta, loss, grad)
  */
     __pyx_t_4 = (__pyx_v_fit_lower != 0);
     if (__pyx_t_4) {
@@ -2682,35 +2669,35 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
     __pyx_L8_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "polylearn/cd_direct_fast.pyx":187
+      /* "polylearn/cd_direct_fast.pyx":186
  * 
  *         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.
  *             viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, d1, d2,             # <<<<<<<<<<<<<<
- *                                      2, beta, loss)
+ *                                      2, beta, loss, grad)
  * 
  */
-      __pyx_v_viol = (__pyx_v_viol + __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__pyx_v_P, 1, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_lams, __pyx_v_d1, __pyx_v_d2, 2, __pyx_v_beta, __pyx_v_loss));
+      __pyx_v_viol = (__pyx_v_viol + __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__pyx_v_P, 1, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_lams, __pyx_v_d1, __pyx_v_d2, 2, __pyx_v_beta, __pyx_v_loss, __pyx_v_grad));
 
-      /* "polylearn/cd_direct_fast.pyx":186
+      /* "polylearn/cd_direct_fast.pyx":185
  *             viol += _cd_linear_epoch(w, X, y, y_pred, col_norm_sq, alpha, loss)
  * 
  *         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.             # <<<<<<<<<<<<<<
  *             viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, d1, d2,
- *                                      2, beta, loss)
+ *                                      2, beta, loss, grad)
  */
     }
 
-    /* "polylearn/cd_direct_fast.pyx":190
- *                                      2, beta, loss)
+    /* "polylearn/cd_direct_fast.pyx":189
+ *                                      2, beta, loss, grad)
  * 
  *         viol += _cd_direct_epoch(P, 0, X, y, y_pred, lams, d1, d2,             # <<<<<<<<<<<<<<
- *                                  degree, beta, loss)
+ *                                  degree, beta, loss, grad)
  * 
  */
-    __pyx_v_viol = (__pyx_v_viol + __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__pyx_v_P, 0, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_lams, __pyx_v_d1, __pyx_v_d2, __pyx_v_degree, __pyx_v_beta, __pyx_v_loss));
+    __pyx_v_viol = (__pyx_v_viol + __pyx_f_9polylearn_14cd_direct_fast__cd_direct_epoch(__pyx_v_P, 0, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_lams, __pyx_v_d1, __pyx_v_d2, __pyx_v_degree, __pyx_v_beta, __pyx_v_loss, __pyx_v_grad));
 
-    /* "polylearn/cd_direct_fast.pyx":193
- *                                  degree, beta, loss)
+    /* "polylearn/cd_direct_fast.pyx":192
+ *                                  degree, beta, loss, grad)
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
  *             print("Iteration", it + 1, "violation sum", viol)
@@ -2719,18 +2706,18 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
     __pyx_t_1 = (__pyx_v_verbose != 0);
     if (__pyx_t_1) {
 
-      /* "polylearn/cd_direct_fast.pyx":194
+      /* "polylearn/cd_direct_fast.pyx":193
  * 
  *         if verbose:
  *             print("Iteration", it + 1, "violation sum", viol)             # <<<<<<<<<<<<<<
  * 
  *         if viol < tol:
  */
-      __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_it + 1)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_it + 1)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PyFloat_FromDouble(__pyx_v_viol); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyFloat_FromDouble(__pyx_v_viol); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = PyTuple_New(4); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyTuple_New(4); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_INCREF(__pyx_n_u_Iteration);
       __Pyx_GIVEREF(__pyx_n_u_Iteration);
@@ -2744,13 +2731,13 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
       PyTuple_SET_ITEM(__pyx_t_7, 3, __pyx_t_6);
       __pyx_t_5 = 0;
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "polylearn/cd_direct_fast.pyx":193
- *                                  degree, beta, loss)
+      /* "polylearn/cd_direct_fast.pyx":192
+ *                                  degree, beta, loss, grad)
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
  *             print("Iteration", it + 1, "violation sum", viol)
@@ -2758,7 +2745,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
     }
 
-    /* "polylearn/cd_direct_fast.pyx":196
+    /* "polylearn/cd_direct_fast.pyx":195
  *             print("Iteration", it + 1, "violation sum", viol)
  * 
  *         if viol < tol:             # <<<<<<<<<<<<<<
@@ -2768,7 +2755,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
     __pyx_t_1 = ((__pyx_v_viol < __pyx_v_tol) != 0);
     if (__pyx_t_1) {
 
-      /* "polylearn/cd_direct_fast.pyx":197
+      /* "polylearn/cd_direct_fast.pyx":196
  * 
  *         if viol < tol:
  *             if verbose:             # <<<<<<<<<<<<<<
@@ -2778,16 +2765,16 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
       __pyx_t_1 = (__pyx_v_verbose != 0);
       if (__pyx_t_1) {
 
-        /* "polylearn/cd_direct_fast.pyx":198
+        /* "polylearn/cd_direct_fast.pyx":197
  *         if viol < tol:
  *             if verbose:
  *                 print("Converged at iteration", it + 1)             # <<<<<<<<<<<<<<
  *             converged = True
  *             break
  */
-        __pyx_t_6 = __Pyx_PyInt_From_long((__pyx_v_it + 1)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyInt_From_long((__pyx_v_it + 1)); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_INCREF(__pyx_kp_u_Converged_at_iteration);
         __Pyx_GIVEREF(__pyx_kp_u_Converged_at_iteration);
@@ -2795,12 +2782,12 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
         __Pyx_GIVEREF(__pyx_t_6);
         PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
         __pyx_t_6 = 0;
-        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "polylearn/cd_direct_fast.pyx":197
+        /* "polylearn/cd_direct_fast.pyx":196
  * 
  *         if viol < tol:
  *             if verbose:             # <<<<<<<<<<<<<<
@@ -2809,7 +2796,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
       }
 
-      /* "polylearn/cd_direct_fast.pyx":199
+      /* "polylearn/cd_direct_fast.pyx":198
  *             if verbose:
  *                 print("Converged at iteration", it + 1)
  *             converged = True             # <<<<<<<<<<<<<<
@@ -2818,7 +2805,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
       __pyx_v_converged = 1;
 
-      /* "polylearn/cd_direct_fast.pyx":200
+      /* "polylearn/cd_direct_fast.pyx":199
  *                 print("Converged at iteration", it + 1)
  *             converged = True
  *             break             # <<<<<<<<<<<<<<
@@ -2827,7 +2814,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
  */
       goto __pyx_L5_break;
 
-      /* "polylearn/cd_direct_fast.pyx":196
+      /* "polylearn/cd_direct_fast.pyx":195
  *             print("Iteration", it + 1, "violation sum", viol)
  * 
  *         if viol < tol:             # <<<<<<<<<<<<<<
@@ -2838,18 +2825,27 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   }
   __pyx_L5_break:;
 
-  /* "polylearn/cd_direct_fast.pyx":203
+  /* "polylearn/cd_direct_fast.pyx":202
  * 
  *     # Free up cache
  *     free(d1)             # <<<<<<<<<<<<<<
+ *     free(grad)
  *     if degree == 3:
- *         free(d2)
  */
   free(__pyx_v_d1);
 
-  /* "polylearn/cd_direct_fast.pyx":204
+  /* "polylearn/cd_direct_fast.pyx":203
  *     # Free up cache
  *     free(d1)
+ *     free(grad)             # <<<<<<<<<<<<<<
+ *     if degree == 3:
+ *         free(d2)
+ */
+  free(__pyx_v_grad);
+
+  /* "polylearn/cd_direct_fast.pyx":204
+ *     free(d1)
+ *     free(grad)
  *     if degree == 3:             # <<<<<<<<<<<<<<
  *         free(d2)
  * 
@@ -2858,7 +2854,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   if (__pyx_t_1) {
 
     /* "polylearn/cd_direct_fast.pyx":205
- *     free(d1)
+ *     free(grad)
  *     if degree == 3:
  *         free(d2)             # <<<<<<<<<<<<<<
  * 
@@ -2867,8 +2863,8 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
     free(__pyx_v_d2);
 
     /* "polylearn/cd_direct_fast.pyx":204
- *     # Free up cache
  *     free(d1)
+ *     free(grad)
  *     if degree == 3:             # <<<<<<<<<<<<<<
  *         free(d2)
  * 
@@ -2887,11 +2883,11 @@ static PyObject *__pyx_pf_9polylearn_14cd_direct_fast__cd_direct_ho(CYTHON_UNUSE
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "polylearn/cd_direct_fast.pyx":151
+  /* "polylearn/cd_direct_fast.pyx":149
  * 
  * 
- * def _cd_direct_ho(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
- *                   double[:] w,
+ * def _cd_direct_ho(double[:, :, ::1] P not None,             # <<<<<<<<<<<<<<
+ *                   double[:] w not None,
  *                   ColumnDataset X,
  */
 
@@ -15165,6 +15161,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
   {&__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_k_got_differing_extents_in_dimensi, sizeof(__pyx_k_got_differing_extents_in_dimensi), 0, 0, 1, 0},
+  {&__pyx_n_s_grad, __pyx_k_grad, sizeof(__pyx_k_grad), 0, 0, 1, 1},
   {&__pyx_kp_s_home_vlad_code_polylearn_polyle, __pyx_k_home_vlad_code_polylearn_polyle, sizeof(__pyx_k_home_vlad_code_polylearn_polyle), 0, 0, 1, 0},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
@@ -15211,8 +15208,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -15375,17 +15372,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
 
-  /* "polylearn/cd_direct_fast.pyx":151
+  /* "polylearn/cd_direct_fast.pyx":149
  * 
  * 
- * def _cd_direct_ho(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
- *                   double[:] w,
+ * def _cd_direct_ho(double[:, :, ::1] P not None,             # <<<<<<<<<<<<<<
+ *                   double[:] w not None,
  *                   ColumnDataset X,
  */
-  __pyx_tuple__14 = PyTuple_Pack(22, __pyx_n_s_P, __pyx_n_s_w, __pyx_n_s_X, __pyx_n_s_col_norm_sq, __pyx_n_s_y, __pyx_n_s_y_pred, __pyx_n_s_lams, __pyx_n_s_degree, __pyx_n_s_alpha, __pyx_n_s_beta, __pyx_n_s_fit_linear, __pyx_n_s_fit_lower, __pyx_n_s_loss, __pyx_n_s_max_iter, __pyx_n_s_tol, __pyx_n_s_verbose, __pyx_n_s_n_samples, __pyx_n_s_it, __pyx_n_s_viol, __pyx_n_s_converged, __pyx_n_s_d1, __pyx_n_s_d2); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__14 = PyTuple_Pack(23, __pyx_n_s_P, __pyx_n_s_w, __pyx_n_s_X, __pyx_n_s_col_norm_sq, __pyx_n_s_y, __pyx_n_s_y_pred, __pyx_n_s_lams, __pyx_n_s_degree, __pyx_n_s_alpha, __pyx_n_s_beta, __pyx_n_s_fit_linear, __pyx_n_s_fit_lower, __pyx_n_s_loss, __pyx_n_s_max_iter, __pyx_n_s_tol, __pyx_n_s_verbose, __pyx_n_s_n_samples, __pyx_n_s_it, __pyx_n_s_viol, __pyx_n_s_converged, __pyx_n_s_d1, __pyx_n_s_d2, __pyx_n_s_grad); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(16, 0, 22, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vlad_code_polylearn_polyle, __pyx_n_s_cd_direct_ho, 151, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(16, 0, 23, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vlad_code_polylearn_polyle, __pyx_n_s_cd_direct_ho, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "View.MemoryView":278
  *         return self.name
@@ -15604,22 +15601,22 @@ PyMODINIT_FUNC PyInit_cd_direct_fast(void)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
 
-  /* "polylearn/cd_direct_fast.pyx":151
+  /* "polylearn/cd_direct_fast.pyx":149
  * 
  * 
- * def _cd_direct_ho(double[:, :, ::1] P,             # <<<<<<<<<<<<<<
- *                   double[:] w,
+ * def _cd_direct_ho(double[:, :, ::1] P not None,             # <<<<<<<<<<<<<<
+ *                   double[:] w not None,
  *                   ColumnDataset X,
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9polylearn_14cd_direct_fast_1_cd_direct_ho, NULL, __pyx_n_s_polylearn_cd_direct_fast); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9polylearn_14cd_direct_fast_1_cd_direct_ho, NULL, __pyx_n_s_polylearn_cd_direct_fast); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cd_direct_ho, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cd_direct_ho, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "polylearn/cd_direct_fast.pyx":1
  * # encoding: utf-8             # <<<<<<<<<<<<<<
+ * # cython: profile=False
  * # cython: language_level=3
- * # cython: cdivision=True
  */
   __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);

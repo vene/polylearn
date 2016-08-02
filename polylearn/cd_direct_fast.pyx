@@ -54,7 +54,8 @@ cdef inline double _update(int* indices,
                            double* d2,
                            unsigned int degree,
                            double lam,
-                           double beta):
+                           double beta,
+                           double* grad_out):
 
     cdef double l1_reg = 2 * beta * fabs(lam)
     
@@ -76,6 +77,7 @@ cdef inline double _update(int* indices,
             grad_y += p_js ** 2 * data[ii] ** 2
 
         grad_y *= lam * data[ii]
+        grad_out[ii] = grad_y
 
         update += loss.dloss(y_pred[i], y[i]) * grad_y
         inv_step_size += grad_y ** 2
@@ -99,7 +101,8 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
                                     double* d2,
                                     unsigned int degree,
                                     double beta,
-                                    LossFunction loss):
+                                    LossFunction loss,
+                                    double* grad):
 
     cdef Py_ssize_t s, j
     cdef double p_old, update, offset
@@ -126,35 +129,29 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
             # compute coordinate update
             p_old = P[order, s, j]
             update = _update(indices, data, n_nz, p_old, y, y_pred,
-                             loss, d1, d2, degree, lams[s], beta)
+                             loss, d1, d2, degree, lams[s], beta, grad)
             P[order, s, j] -= update
             sum_viol += fabs(update)
 
             # Synchronize predictions and ds
             for ii in range(n_nz):
                 i = indices[ii]
-                if degree == 2:
-                    offset = d1[i] - p_old * data[ii]
-                else:
-                    offset = d1[i] ** 2 - d2[i]
-                    offset *= 0.5
-                    offset -= p_old * data[ii] * d1[i]
-                    offset += p_old ** 2 * data[ii] ** 2
 
+                if degree == 3:
                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
 
                 d1[i] -= update * data[ii]
-                y_pred[i] -= offset * lams[s] * update * data[ii]
+                y_pred[i] -= update * grad[ii]
     return sum_viol
 
 
-def _cd_direct_ho(double[:, :, ::1] P,
-                  double[:] w,
+def _cd_direct_ho(double[:, :, ::1] P not None,
+                  double[:] w not None,
                   ColumnDataset X,
-                  double[:] col_norm_sq,
-                  double[:] y,
-                  double[:] y_pred,
-                  double[:] lams,
+                  double[:] col_norm_sq not None,
+                  double[:] y not None,
+                  double[:] y_pred not None,
+                  double[:] lams not None,
                   unsigned int degree,
                   double alpha,
                   double beta,
@@ -176,6 +173,7 @@ def _cd_direct_ho(double[:, :, ::1] P,
     cdef double *d2
     if degree == 3:
         d2 = <double *> malloc(n_samples * sizeof(double))
+    cdef double *grad = <double *> malloc(n_samples * sizeof(double))
 
     for it in range(max_iter):
         viol = 0
@@ -185,10 +183,10 @@ def _cd_direct_ho(double[:, :, ::1] P,
 
         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.
             viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, d1, d2,
-                                     2, beta, loss)
+                                     2, beta, loss, grad)
 
         viol += _cd_direct_epoch(P, 0, X, y, y_pred, lams, d1, d2,
-                                 degree, beta, loss)
+                                 degree, beta, loss, grad)
 
         if verbose:
             print("Iteration", it + 1, "violation sum", viol)
@@ -201,6 +199,7 @@ def _cd_direct_ho(double[:, :, ::1] P,
 
     # Free up cache
     free(d1)
+    free(grad)
     if degree == 3:
         free(d2)
 
