@@ -55,7 +55,7 @@ cdef inline double _update(int* indices,
                            unsigned int degree,
                            double lam,
                            double beta,
-                           double* grad_out):
+                           double* cache_kp):
 
     cdef double l1_reg = 2 * beta * fabs(lam)
     
@@ -63,24 +63,24 @@ cdef inline double _update(int* indices,
 
     cdef double inv_step_size = 0
 
-    cdef double grad_y
+    cdef double kp  # derivative of the ANOVA kernel
     cdef double update = 0
 
     for ii in range(n_nz):
         i = indices[ii]
 
         if degree == 2:
-            grad_y = d1[i] - p_js * data[ii]
+            kp = d1[i] - p_js * data[ii]
         elif degree == 3:
-            grad_y = 0.5 * (d1[i] ** 2 - d2[i])
-            grad_y -= p_js * data[ii] * d1[i]
-            grad_y += p_js ** 2 * data[ii] ** 2
+            kp = 0.5 * (d1[i] ** 2 - d2[i])
+            kp -= p_js * data[ii] * d1[i]
+            kp += p_js ** 2 * data[ii] ** 2
 
-        grad_y *= lam * data[ii]
-        grad_out[ii] = grad_y
+        kp *= lam * data[ii]
+        cache_kp[ii] = kp
 
-        update += loss.dloss(y_pred[i], y[i]) * grad_y
-        inv_step_size += grad_y ** 2
+        update += loss.dloss(y_pred[i], y[i]) * kp
+        inv_step_size += kp ** 2
 
     inv_step_size *= loss.mu
     inv_step_size += l1_reg
@@ -102,7 +102,7 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
                                     unsigned int degree,
                                     double beta,
                                     LossFunction loss,
-                                    double* grad):
+                                    double* cache_kp):
 
     cdef Py_ssize_t s, j
     cdef double p_old, update, offset
@@ -129,7 +129,7 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
             # compute coordinate update
             p_old = P[order, s, j]
             update = _update(indices, data, n_nz, p_old, y, y_pred,
-                             loss, d1, d2, degree, lams[s], beta, grad)
+                             loss, d1, d2, degree, lams[s], beta, cache_kp)
             P[order, s, j] -= update
             sum_viol += fabs(update)
 
@@ -141,7 +141,7 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
                     d2[i] -= (p_old ** 2 - P[order, s, j] ** 2) * data[ii] ** 2
 
                 d1[i] -= update * data[ii]
-                y_pred[i] -= update * grad[ii]
+                y_pred[i] -= update * cache_kp[ii]
     return sum_viol
 
 
@@ -173,7 +173,7 @@ def _cd_direct_ho(double[:, :, ::1] P not None,
     cdef double *d2
     if degree == 3:
         d2 = <double *> malloc(n_samples * sizeof(double))
-    cdef double *grad = <double *> malloc(n_samples * sizeof(double))
+    cdef double *cache_kp = <double *> malloc(n_samples * sizeof(double))
 
     for it in range(max_iter):
         viol = 0
@@ -183,10 +183,10 @@ def _cd_direct_ho(double[:, :, ::1] P not None,
 
         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.
             viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, d1, d2,
-                                     2, beta, loss, grad)
+                                     2, beta, loss, cache_kp)
 
         viol += _cd_direct_epoch(P, 0, X, y, y_pred, lams, d1, d2,
-                                 degree, beta, loss, grad)
+                                 degree, beta, loss, cache_kp)
 
         if verbose:
             print("Iteration", it + 1, "violation sum", viol)
@@ -199,7 +199,7 @@ def _cd_direct_ho(double[:, :, ::1] P not None,
 
     # Free up cache
     free(d1)
-    free(grad)
+    free(cache_kp)
     if degree == 3:
         free(d2)
 
