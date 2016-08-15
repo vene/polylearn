@@ -8,10 +8,7 @@
 # License: BSD
 
 from libc.math cimport fabs
-
-import numpy as np
-cimport numpy as np
-np.import_array()
+from cython.view cimport array
 
 from lightning.impl.dataset_fast cimport ColumnDataset
 
@@ -173,8 +170,8 @@ def _cd_direct_ho(double[:, :, ::1] P not None,
     cdef bint converged = False
 
     # precomputed values
-    cdef double[:, ::1] D = np.empty((degree - 1, n_samples))
-    cdef double[:] cache_kp = np.empty(n_samples)
+    cdef double[:, ::1] D = array((degree - 1, n_samples), sizeof(double), 'd')
+    cdef double[:] cache_kp = array((n_samples,), sizeof(double), 'd')
 
     for it in range(max_iter):
         viol = 0

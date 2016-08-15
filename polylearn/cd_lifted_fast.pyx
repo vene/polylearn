@@ -8,18 +8,16 @@
 # License: BSD
 
 from libc.math cimport fabs
-
-import numpy as np
-cimport numpy as np
-np.import_array()
+from cython.view cimport array
 
 from lightning.impl.dataset_fast cimport ColumnDataset
 
 from .loss_fast cimport LossFunction
 
 
-def _lifted_predict(double[:, :, ::1] U,
-                    ColumnDataset X):
+def _fast_lifted_predict(double[:, :, ::1] U,
+                         ColumnDataset X,
+                         double[:] out):
 
     # np.product(safe_sparse_dot(U, X.T), axis=0).sum(axis=0)
     #
@@ -38,9 +36,8 @@ def _lifted_predict(double[:, :, ::1] U,
 
     cdef Py_ssize_t i, j, ii
 
-    cdef np.ndarray[double, ndim=1] out = np.zeros(n_samples)
-    cdef double[:] middle = np.empty(n_samples)
-    cdef double[:] inner = np.empty(n_samples)
+    cdef double[:] middle = array((n_samples,), sizeof(double), 'd')
+    cdef double[:] inner = array((n_samples,), sizeof(double), 'd')
 
     for s in range(n_components):
 
@@ -65,8 +62,6 @@ def _lifted_predict(double[:, :, ::1] U,
 
         for i in range(n_samples):
             out[i] += middle[i]
-
-    return out
 
 
 cdef void _precompute(double[:, :, ::1] U,
@@ -132,8 +127,8 @@ def _cd_lifted(double[:, :, ::1] U,
     cdef double update
     cdef double u_old
 
-    cdef double[:] xi = np.empty(n_samples)
-    cdef double[:] tmp = np.empty(n_samples)
+    cdef double[:] xi = array((n_samples,), sizeof(double), 'd')
+    cdef double[:] tmp = array((n_samples,), sizeof(double), 'd')
 
     # Data pointers
     cdef double* data

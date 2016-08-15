@@ -23,7 +23,13 @@ except ImportError:
 from lightning.impl.dataset_fast import get_dataset
 
 from .base import _BasePoly, _PolyClassifierMixin, _PolyRegressorMixin
-from .cd_lifted_fast import _cd_lifted, _lifted_predict
+from .cd_lifted_fast import _cd_lifted, _fast_lifted_predict
+
+
+def _lifted_predict(U, dataset):
+    out = np.zeros(dataset.get_n_samples(), dtype=np.double)
+    _fast_lifted_predict(U, dataset, out)
+    return out
 
 
 class _BasePolynomialNetwork(six.with_metaclass(ABCMeta, _BasePoly)):
