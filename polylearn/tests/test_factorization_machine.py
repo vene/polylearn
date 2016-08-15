@@ -338,3 +338,29 @@ def check_warm_start(degree):
 def test_warm_start():
     yield check_warm_start, 2
     yield check_warm_start, 3
+
+
+def check_sample_weight(degree):
+    clf = FactorizationMachineClassifier(degree=degree, loss='squared_hinge',
+                                         alpha=0.1, beta=0.01, tol=1e-2,
+                                         random_state=0)
+
+    y = np.sign(_poly_predict(X, P, lams, kernel="anova", degree=degree))
+    X_repeat = np.row_stack([X, X[:10], X[:3]])
+    y_repeat = np.concatenate([y, y[:10], y[:3]])
+    clf.fit(X_repeat, y_repeat)
+    w_repeat = clf.w_
+    P_repeat = clf.P_
+
+    sample_weight = np.ones(X.shape[0])
+    sample_weight[:10] = 2
+    sample_weight[:3] = 3
+    clf.fit(X, y, sample_weight=sample_weight)
+
+    assert_array_almost_equal(clf.w_, w_repeat)
+    assert_array_almost_equal(clf.P_, P_repeat)
+
+
+def test_sample_weight():
+    yield check_sample_weight, 2
+    yield check_sample_weight, 3

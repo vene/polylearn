@@ -10,7 +10,8 @@ import numpy as np
 from sklearn.preprocessing import add_dummy_feature
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array
-from sklearn.utils.extmath import safe_sparse_dot, row_norms
+from sklearn.utils.extmath import safe_sparse_dot
+from sklearn.utils.class_weight import compute_sample_weight
 from sklearn.externals import six
 
 try:
@@ -30,14 +31,15 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
     @abstractmethod
     def __init__(self, degree=2, loss='squared', n_components=2, alpha=1,
-                 beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 warm_start=False, init_lambdas='ones', max_iter=10000,
-                 verbose=False, random_state=None):
+                 beta=1, class_weight=None, tol=1e-6, fit_lower='explicit',
+                 fit_linear=True, warm_start=False, init_lambdas='ones',
+                 max_iter=10000, verbose=False, random_state=None):
         self.degree = degree
         self.loss = loss
         self.n_components = n_components
         self.alpha = alpha
         self.beta = beta
+        self.class_weight = class_weight
         self.tol = tol
         self.fit_lower = fit_lower
         self.fit_linear = fit_linear
@@ -56,7 +58,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
                 X = add_dummy_feature(X, value=1)
         return X
 
-    def fit(self, X, y):
+    def fit(self, X, y, sample_weight=None):
         """Fit factorization machine to training data.
 
         Parameters
@@ -78,11 +80,17 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
         X, y = self._check_X_y(X, y)
         X = self._augment(X)
-        n_features = X.shape[1]  # augmented
-        X_col_norms = row_norms(X.T, squared=True)
+        n_samples, n_features = X.shape  # augmented
+
         dataset = get_dataset(X, order="fortran")
         rng = check_random_state(self.random_state)
         loss_obj = self._get_loss(self.loss)
+
+        if sample_weight is None:
+            sample_weight = np.ones(n_samples, dtype=np.double)
+
+        if self.class_weight:
+            sample_weight *= compute_sample_weight(self.class_weight, y)
 
         if not (self.warm_start and hasattr(self, 'w_')):
             self.w_ = np.zeros(n_features, dtype=np.double)
@@ -107,9 +115,9 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
         y_pred = self._get_output(X)
 
-        converged = _cd_direct_ho(self.P_, self.w_, dataset, X_col_norms, y,
-                                  y_pred, self.lams_, self.degree, self.alpha,
-                                  self.beta, self.fit_linear,
+        converged = _cd_direct_ho(self.P_, self.w_, dataset, y, y_pred,
+                                  sample_weight, self.lams_, self.degree,
+                                  self.alpha, self.beta, self.fit_linear,
                                   self.fit_lower == 'explicit', loss_obj,
                                   self.max_iter, self.tol, self.verbose)
         if not converged:
@@ -244,7 +252,7 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
                  random_state=None):
 
         super(FactorizationMachineRegressor, self).__init__(
-            degree, 'squared', n_components, alpha, beta, tol, fit_lower,
+            degree, 'squared', n_components, alpha, beta, None, tol, fit_lower,
             fit_linear, warm_start, init_lambdas, max_iter, verbose,
             random_state)
 
@@ -279,6 +287,13 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
 
     beta : float, default: 1
         Regularization amount for higher-order weights.
+
+    class_weight : dict or 'balanced', optional
+        Weights associated with classes in the form ``{class_label: weight}``.
+        If not given, all classes are supposed to have weight one.
+        The "balanced" mode uses the values of y to automatically adjust
+        weights inversely proportional to class frequencies in the input data
+        as ``n_samples / (n_classes * np.bincount(y))``
 
     tol : float, default: 1e-6
         Tolerance for the stopping condition.
@@ -359,11 +374,11 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
     """
 
     def __init__(self, degree=2, loss='squared_hinge', n_components=2, alpha=1,
-                 beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 warm_start=False, init_lambdas='ones', max_iter=10000,
-                 verbose=False, random_state=None):
+                 beta=1, class_weight=None, tol=1e-6, fit_lower='explicit',
+                 fit_linear=True, warm_start=False, init_lambdas='ones',
+                 max_iter=10000, verbose=False, random_state=None):
 
         super(FactorizationMachineClassifier, self).__init__(
-            degree, loss, n_components, alpha, beta, tol, fit_lower,
-            fit_linear, warm_start, init_lambdas, max_iter, verbose,
+            degree, loss, n_components, alpha, beta, class_weight, tol,
+            fit_lower, fit_linear, warm_start, init_lambdas, max_iter, verbose,
             random_state)

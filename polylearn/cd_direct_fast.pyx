@@ -51,6 +51,7 @@ cdef inline double _update(int* indices,
                            double p_js,
                            double[:] y,
                            double[:] y_pred,
+                           double[:] sample_weight,
                            LossFunction loss,
                            unsigned int degree,
                            double lam,
@@ -80,8 +81,8 @@ cdef inline double _update(int* indices,
         kp *= lam * data[ii]
         cache_kp[ii] = kp
 
-        update += loss.dloss(y_pred[i], y[i]) * kp
-        inv_step_size += kp ** 2
+        update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * kp
+        inv_step_size += sample_weight[i] * kp ** 2
 
     inv_step_size *= loss.mu
     inv_step_size += l1_reg
@@ -97,6 +98,7 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
                                     ColumnDataset X,
                                     double[:] y,
                                     double[:] y_pred,
+                                    double[:] sample_weight,
                                     double[:] lams,
                                     unsigned int degree,
                                     double beta,
@@ -129,7 +131,8 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
             # compute coordinate update
             p_old = P[order, s, j]
             update = _update(indices, data, n_nz, p_old, y, y_pred,
-                             loss, degree, lams[s], beta, D, cache_kp)
+                             sample_weight, loss, degree, lams[s], beta, D,
+                             cache_kp)
             P[order, s, j] -= update
             sum_viol += fabs(update)
 
@@ -149,9 +152,9 @@ cdef inline double _cd_direct_epoch(double[:, :, ::1] P,
 def _cd_direct_ho(double[:, :, ::1] P not None,
                   double[:] w not None,
                   ColumnDataset X,
-                  double[:] col_norm_sq not None,
                   double[:] y not None,
                   double[:] y_pred not None,
+                  double[:] sample_weight not None,
                   double[:] lams not None,
                   unsigned int degree,
                   double alpha,
@@ -177,14 +180,15 @@ def _cd_direct_ho(double[:, :, ::1] P not None,
         viol = 0
 
         if fit_linear:
-            viol += _cd_linear_epoch(w, X, y, y_pred, col_norm_sq, alpha, loss)
+            viol += _cd_linear_epoch(w, X, y, y_pred, sample_weight, alpha,
+                                     loss)
 
         if fit_lower and degree == 3:  # fit degree 2. Will be looped later.
-            viol += _cd_direct_epoch(P, 1, X, y, y_pred, lams, 2, beta, loss,
-                                     D, cache_kp)
+            viol += _cd_direct_epoch(P, 1, X, y, y_pred, sample_weight, lams,
+                                     2, beta, loss, D, cache_kp)
 
-        viol += _cd_direct_epoch(P, 0, X, y, y_pred, lams, degree, beta, loss,
-                                 D, cache_kp)
+        viol += _cd_direct_epoch(P, 0, X, y, y_pred, sample_weight, lams,
+                                 degree, beta, loss, D, cache_kp)
 
         if verbose:
             print("Iteration", it + 1, "violation sum", viol)

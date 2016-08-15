@@ -1568,8 +1568,8 @@ static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_MemoryError[] = "MemoryError";
-static const char __pyx_k_col_norm_sq[] = "col_norm_sq";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
+static const char __pyx_k_sample_weight[] = "sample_weight";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
@@ -1617,7 +1617,6 @@ static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_class;
-static PyObject *__pyx_n_s_col_norm_sq;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
 static PyObject *__pyx_n_s_dtype_is_object;
@@ -1645,6 +1644,7 @@ static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pyx_getbuffer;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_n_s_sample_weight;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_size;
 static PyObject *__pyx_n_s_start;
@@ -1661,7 +1661,7 @@ static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_w;
 static PyObject *__pyx_n_s_y;
 static PyObject *__pyx_n_s_y_pred;
-static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_col_norm_sq, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss); /* proto */
+static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_sample_weight, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -1729,7 +1729,7 @@ static PyObject *__pyx_tuple__18;
  */
 
 static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_col_norm_sq, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_sample_weight, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss, CYTHON_UNUSED int __pyx_skip_dispatch) {
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   Py_ssize_t __pyx_v_ii;
@@ -1752,6 +1752,7 @@ static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memview
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
   __Pyx_RefNannySetupContext("_cd_linear_epoch", 0);
 
   /* "polylearn/cd_linear_fast.pyx":26
@@ -1796,8 +1797,8 @@ static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memview
  * 
  *         # compute gradient with respect to w_j
  *         update = alpha * w[j]             # <<<<<<<<<<<<<<
+ *         inv_step_size = alpha
  *         for ii in range(n_nz):
- *             i = indices[ii]
  */
     __pyx_t_3 = __pyx_v_j;
     __pyx_v_update = (__pyx_v_alpha * (*((double *) ( /* dim=0 */ (__pyx_v_w.data + __pyx_t_3 * __pyx_v_w.strides[0]) ))));
@@ -1805,48 +1806,58 @@ static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memview
     /* "polylearn/cd_linear_fast.pyx":41
  *         # compute gradient with respect to w_j
  *         update = alpha * w[j]
+ *         inv_step_size = alpha             # <<<<<<<<<<<<<<
+ *         for ii in range(n_nz):
+ *             i = indices[ii]
+ */
+    __pyx_v_inv_step_size = __pyx_v_alpha;
+
+    /* "polylearn/cd_linear_fast.pyx":42
+ *         update = alpha * w[j]
+ *         inv_step_size = alpha
  *         for ii in range(n_nz):             # <<<<<<<<<<<<<<
  *             i = indices[ii]
- *             update += loss.dloss(y_pred[i], y[i]) * data[ii]
+ *             update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * data[ii]
  */
     __pyx_t_4 = __pyx_v_n_nz;
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_ii = __pyx_t_5;
 
-      /* "polylearn/cd_linear_fast.pyx":42
- *         update = alpha * w[j]
+      /* "polylearn/cd_linear_fast.pyx":43
+ *         inv_step_size = alpha
  *         for ii in range(n_nz):
  *             i = indices[ii]             # <<<<<<<<<<<<<<
- *             update += loss.dloss(y_pred[i], y[i]) * data[ii]
- * 
+ *             update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * data[ii]
+ *             inv_step_size += loss.mu * sample_weight[i] * (data[ii] ** 2)
  */
       __pyx_v_i = (__pyx_v_indices[__pyx_v_ii]);
 
-      /* "polylearn/cd_linear_fast.pyx":43
+      /* "polylearn/cd_linear_fast.pyx":44
  *         for ii in range(n_nz):
  *             i = indices[ii]
- *             update += loss.dloss(y_pred[i], y[i]) * data[ii]             # <<<<<<<<<<<<<<
+ *             update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * data[ii]             # <<<<<<<<<<<<<<
+ *             inv_step_size += loss.mu * sample_weight[i] * (data[ii] ** 2)
  * 
- *         # compute second derivative upper bound
  */
       __pyx_t_6 = __pyx_v_i;
       __pyx_t_7 = __pyx_v_i;
-      __pyx_v_update = (__pyx_v_update + (((struct __pyx_vtabstruct_9polylearn_9loss_fast_LossFunction *)__pyx_v_loss->__pyx_vtab)->dloss(__pyx_v_loss, (*((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_6 * __pyx_v_y_pred.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_y.data + __pyx_t_7 * __pyx_v_y.strides[0]) )))) * (__pyx_v_data[__pyx_v_ii])));
+      __pyx_t_8 = __pyx_v_i;
+      __pyx_v_update = (__pyx_v_update + (((*((double *) ( /* dim=0 */ (__pyx_v_sample_weight.data + __pyx_t_6 * __pyx_v_sample_weight.strides[0]) ))) * ((struct __pyx_vtabstruct_9polylearn_9loss_fast_LossFunction *)__pyx_v_loss->__pyx_vtab)->dloss(__pyx_v_loss, (*((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_7 * __pyx_v_y_pred.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_y.data + __pyx_t_8 * __pyx_v_y.strides[0]) ))))) * (__pyx_v_data[__pyx_v_ii])));
+
+      /* "polylearn/cd_linear_fast.pyx":45
+ *             i = indices[ii]
+ *             update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * data[ii]
+ *             inv_step_size += loss.mu * sample_weight[i] * (data[ii] ** 2)             # <<<<<<<<<<<<<<
+ * 
+ *         update /= inv_step_size
+ */
+      __pyx_t_9 = __pyx_v_i;
+      __pyx_v_inv_step_size = (__pyx_v_inv_step_size + ((__pyx_v_loss->mu * (*((double *) ( /* dim=0 */ (__pyx_v_sample_weight.data + __pyx_t_9 * __pyx_v_sample_weight.strides[0]) )))) * pow((__pyx_v_data[__pyx_v_ii]), 2.0)));
     }
 
-    /* "polylearn/cd_linear_fast.pyx":46
- * 
- *         # compute second derivative upper bound
- *         inv_step_size = loss.mu * col_norm_sq[j] + alpha             # <<<<<<<<<<<<<<
- *         update /= inv_step_size
- * 
- */
-    __pyx_t_8 = __pyx_v_j;
-    __pyx_v_inv_step_size = ((__pyx_v_loss->mu * (*((double *) ( /* dim=0 */ (__pyx_v_col_norm_sq.data + __pyx_t_8 * __pyx_v_col_norm_sq.strides[0]) )))) + __pyx_v_alpha);
-
     /* "polylearn/cd_linear_fast.pyx":47
- *         # compute second derivative upper bound
- *         inv_step_size = loss.mu * col_norm_sq[j] + alpha
+ *             inv_step_size += loss.mu * sample_weight[i] * (data[ii] ** 2)
+ * 
  *         update /= inv_step_size             # <<<<<<<<<<<<<<
  * 
  *         w[j] -= update
@@ -1860,8 +1871,8 @@ static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memview
  *         sum_viol += fabs(update)
  * 
  */
-    __pyx_t_9 = __pyx_v_j;
-    *((double *) ( /* dim=0 */ (__pyx_v_w.data + __pyx_t_9 * __pyx_v_w.strides[0]) )) -= __pyx_v_update;
+    __pyx_t_10 = __pyx_v_j;
+    *((double *) ( /* dim=0 */ (__pyx_v_w.data + __pyx_t_10 * __pyx_v_w.strides[0]) )) -= __pyx_v_update;
 
     /* "polylearn/cd_linear_fast.pyx":50
  * 
@@ -1899,8 +1910,8 @@ static double __pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__Pyx_memview
  * 
  *     return sum_viol
  */
-      __pyx_t_10 = __pyx_v_i;
-      *((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_10 * __pyx_v_y_pred.strides[0]) )) -= (__pyx_v_update * (__pyx_v_data[__pyx_v_ii]));
+      __pyx_t_11 = __pyx_v_i;
+      *((double *) ( /* dim=0 */ (__pyx_v_y_pred.data + __pyx_t_11 * __pyx_v_y_pred.strides[0]) )) -= (__pyx_v_update * (__pyx_v_data[__pyx_v_ii]));
     }
   }
 
@@ -1933,14 +1944,14 @@ static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject
   struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X = 0;
   __Pyx_memviewslice __pyx_v_y = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_y_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_col_norm_sq = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_sample_weight = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_alpha;
   struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_cd_linear_epoch (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_w,&__pyx_n_s_X,&__pyx_n_s_y,&__pyx_n_s_y_pred,&__pyx_n_s_col_norm_sq,&__pyx_n_s_alpha,&__pyx_n_s_loss,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_w,&__pyx_n_s_X,&__pyx_n_s_y,&__pyx_n_s_y_pred,&__pyx_n_s_sample_weight,&__pyx_n_s_alpha,&__pyx_n_s_loss,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -1977,7 +1988,7 @@ static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject
           __Pyx_RaiseArgtupleInvalid("_cd_linear_epoch", 1, 7, 7, 3); __PYX_ERR(0, 17, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_col_norm_sq)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sample_weight)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("_cd_linear_epoch", 1, 7, 7, 4); __PYX_ERR(0, 17, __pyx_L3_error)
         }
@@ -2010,7 +2021,7 @@ static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject
     __pyx_v_X = ((struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *)values[1]);
     __pyx_v_y = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2]); if (unlikely(!__pyx_v_y.memview)) __PYX_ERR(0, 19, __pyx_L3_error)
     __pyx_v_y_pred = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3]); if (unlikely(!__pyx_v_y_pred.memview)) __PYX_ERR(0, 20, __pyx_L3_error)
-    __pyx_v_col_norm_sq = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4]); if (unlikely(!__pyx_v_col_norm_sq.memview)) __PYX_ERR(0, 21, __pyx_L3_error)
+    __pyx_v_sample_weight = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4]); if (unlikely(!__pyx_v_sample_weight.memview)) __PYX_ERR(0, 21, __pyx_L3_error)
     __pyx_v_alpha = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_alpha == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
     __pyx_v_loss = ((struct __pyx_obj_9polylearn_9loss_fast_LossFunction *)values[6]);
   }
@@ -2024,7 +2035,7 @@ static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_X), __pyx_ptype_9lightning_4impl_12dataset_fast_ColumnDataset, 1, "X", 0))) __PYX_ERR(0, 18, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), __pyx_ptype_9polylearn_9loss_fast_LossFunction, 1, "loss", 0))) __PYX_ERR(0, 23, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(__pyx_self, __pyx_v_w, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_col_norm_sq, __pyx_v_alpha, __pyx_v_loss);
+  __pyx_r = __pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(__pyx_self, __pyx_v_w, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_sample_weight, __pyx_v_alpha, __pyx_v_loss);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2035,7 +2046,7 @@ static PyObject *__pyx_pw_9polylearn_14cd_linear_fast_1_cd_linear_epoch(PyObject
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_col_norm_sq, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss) {
+static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_w, struct __pyx_obj_9lightning_4impl_12dataset_fast_ColumnDataset *__pyx_v_X, __Pyx_memviewslice __pyx_v_y, __Pyx_memviewslice __pyx_v_y_pred, __Pyx_memviewslice __pyx_v_sample_weight, double __pyx_v_alpha, struct __pyx_obj_9polylearn_9loss_fast_LossFunction *__pyx_v_loss) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2044,8 +2055,8 @@ static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UN
   if (unlikely(!__pyx_v_w.memview)) { __Pyx_RaiseUnboundLocalError("w"); __PYX_ERR(0, 17, __pyx_L1_error) }
   if (unlikely(!__pyx_v_y.memview)) { __Pyx_RaiseUnboundLocalError("y"); __PYX_ERR(0, 17, __pyx_L1_error) }
   if (unlikely(!__pyx_v_y_pred.memview)) { __Pyx_RaiseUnboundLocalError("y_pred"); __PYX_ERR(0, 17, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_col_norm_sq.memview)) { __Pyx_RaiseUnboundLocalError("col_norm_sq"); __PYX_ERR(0, 17, __pyx_L1_error) }
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__pyx_v_w, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_col_norm_sq, __pyx_v_alpha, __pyx_v_loss, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (unlikely(!__pyx_v_sample_weight.memview)) { __Pyx_RaiseUnboundLocalError("sample_weight"); __PYX_ERR(0, 17, __pyx_L1_error) }
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_9polylearn_14cd_linear_fast__cd_linear_epoch(__pyx_v_w, __pyx_v_X, __pyx_v_y, __pyx_v_y_pred, __pyx_v_sample_weight, __pyx_v_alpha, __pyx_v_loss, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2060,7 +2071,7 @@ static PyObject *__pyx_pf_9polylearn_14cd_linear_fast__cd_linear_epoch(CYTHON_UN
   __PYX_XDEC_MEMVIEW(&__pyx_v_w, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_y, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_y_pred, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_col_norm_sq, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_sample_weight, 1);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -14352,7 +14363,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
-  {&__pyx_n_s_col_norm_sq, __pyx_k_col_norm_sq, sizeof(__pyx_k_col_norm_sq), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
@@ -14380,6 +14390,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_n_s_sample_weight, __pyx_k_sample_weight, sizeof(__pyx_k_sample_weight), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},

@@ -20,13 +20,13 @@ n_iter = 100
 
 def _fit_linear(X, y, alpha, n_iter, loss, callback=None):
     n_samples, n_features = X.shape
-    X_col_norm_sq = (X ** 2).sum(axis=0)
     X_ds = get_dataset(X, order='fortran')
     w_init = np.zeros(n_features)
     y_pred = np.zeros(n_samples)
+    sample_weights = np.ones(n_samples, dtype=np.double)
 
     for _ in range(n_iter):
-        viol = _cd_linear_epoch(w_init, X_ds, y, y_pred, X_col_norm_sq,
+        viol = _cd_linear_epoch(w_init, X_ds, y, y_pred, sample_weights,
                                 alpha, loss)
         if callback is not None:
             callback(w_init, viol)

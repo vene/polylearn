@@ -18,7 +18,7 @@ cpdef double _cd_linear_epoch(double[:] w,
                               ColumnDataset X,
                               double[:] y,
                               double[:] y_pred,
-                              double[:] col_norm_sq,
+                              double[:] sample_weight,
                               double alpha,
                               LossFunction loss):
 
@@ -38,12 +38,12 @@ cpdef double _cd_linear_epoch(double[:] w,
 
         # compute gradient with respect to w_j
         update = alpha * w[j]
+        inv_step_size = alpha
         for ii in range(n_nz):
             i = indices[ii]
-            update += loss.dloss(y_pred[i], y[i]) * data[ii]
+            update += sample_weight[i] * loss.dloss(y_pred[i], y[i]) * data[ii]
+            inv_step_size += loss.mu * sample_weight[i] * (data[ii] ** 2)
 
-        # compute second derivative upper bound
-        inv_step_size = loss.mu * col_norm_sq[j] + alpha
         update /= inv_step_size
 
         w[j] -= update
