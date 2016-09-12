@@ -8,18 +8,21 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('polylearn', parent_package, top_path)
 
-    config.add_extension('loss_fast', sources=['loss_fast.cpp'],
+    config.add_extension('adagrad_fast', sources=['adagrad_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
-    config.add_extension('kernels_fast', sources=['kernels_fast.cpp'])
-
     config.add_extension('cd_direct_fast', sources=['cd_direct_fast.cpp'],
+                         include_dirs=[numpy.get_include()])
+
+    config.add_extension('cd_lifted_fast', sources=['cd_lifted_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
     config.add_extension('cd_linear_fast', sources=['cd_linear_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
-    config.add_extension('cd_lifted_fast', sources=['cd_lifted_fast.cpp'],
+    config.add_extension('kernels_fast', sources=['kernels_fast.cpp'])
+
+    config.add_extension('loss_fast', sources=['loss_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
     config.add_subpackage('tests')

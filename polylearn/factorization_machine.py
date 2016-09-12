@@ -24,6 +24,7 @@ from lightning.impl.dataset_fast import get_dataset
 from .base import _BasePoly, _PolyClassifierMixin, _PolyRegressorMixin
 from .kernels import _poly_predict
 from .cd_direct_fast import _cd_direct_ho
+from .adagrad_fast import _fast_fm_adagrad
 
 
 class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
@@ -31,8 +32,9 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
     @abstractmethod
     def __init__(self, degree=2, loss='squared', n_components=2, alpha=1,
                  beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 warm_start=False, init_lambdas='ones', max_iter=10000,
-                 verbose=False, random_state=None):
+                 learning_rate=0.001, solver='cd', warm_start=False,
+                 init_lambdas='ones', max_iter=10000, verbose=False,
+                 callback=None, n_calls=100, random_state=None):
         self.degree = degree
         self.loss = loss
         self.n_components = n_components
@@ -41,10 +43,14 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
         self.tol = tol
         self.fit_lower = fit_lower
         self.fit_linear = fit_linear
+        self.learning_rate = learning_rate
+        self.solver = solver
         self.warm_start = warm_start
         self.init_lambdas = init_lambdas
         self.max_iter = max_iter
         self.verbose = verbose
+        self.callback = callback
+        self.n_calls = n_calls
         self.random_state = random_state
 
     def _augment(self, X):
@@ -73,14 +79,10 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
         self : Estimator
             Returns self.
         """
-        if self.degree > 3:
-            raise ValueError("FMs with degree >3 not yet supported.")
 
         X, y = self._check_X_y(X, y)
         X = self._augment(X)
         n_features = X.shape[1]  # augmented
-        X_col_norms = row_norms(X.T, squared=True)
-        dataset = get_dataset(X, order="fortran")
         rng = check_random_state(self.random_state)
         loss_obj = self._get_loss(self.loss)
 
@@ -105,16 +107,38 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
                                  "(init_lambdas='ones') or as random "
                                  "+/- 1 (init_lambdas='random_signs').")
 
-        y_pred = self._get_output(X)
+        if self.solver == 'cd':
+            if self.degree > 3:
+                raise NotImplementedError("CD solver does not yet implement "
+                                          "FMs with degree >3. Use the "
+                                          "Adagrad solver instead.")
 
-        converged = _cd_direct_ho(self.P_, self.w_, dataset, X_col_norms, y,
-                                  y_pred, self.lams_, self.degree, self.alpha,
-                                  self.beta, self.fit_linear,
-                                  self.fit_lower == 'explicit', loss_obj,
-                                  self.max_iter, self.tol, self.verbose)
-        if not converged:
-            warnings.warn("Objective did not converge. Increase max_iter.")
+            X_col_norms = row_norms(X.T, squared=True)
+            dataset = get_dataset(X, order="fortran")
 
+            y_pred = self._get_output(X)
+
+            converged = _cd_direct_ho(self.P_, self.w_, dataset, X_col_norms,
+                                      y, y_pred, self.lams_, self.degree,
+                                      self.alpha, self.beta, self.fit_linear,
+                                      self.fit_lower == 'explicit', loss_obj,
+                                      self.max_iter, self.tol, self.verbose)
+            if not converged:
+                warnings.warn("Objective did not converge. Increase max_iter.")
+
+        elif self.solver == 'adagrad':
+            if self.fit_lower == 'explicit' and self.degree > 2:
+                raise NotImplementedError("Adagrad solver currently doesn't "
+                                          "support `fit_lower='explicit'`.")
+            if self.init_lambdas != 'ones':
+                raise NotImplementedError("Adagrad solver currently doesn't "
+                                          "support `init_lambdas != 'ones'`.")
+
+            dataset = get_dataset(X, order="c")
+            _fast_fm_adagrad(self, self.w_, self.P_[0], dataset, y,
+                             self.degree, self.alpha, self.beta,
+                             self.fit_linear, loss_obj, self.max_iter,
+                             self.learning_rate, self.callback, self.n_calls)
         return self
 
     def _get_output(self, X):
@@ -125,7 +149,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
             y_pred += safe_sparse_dot(X, self.w_)
 
         if self.fit_lower == 'explicit' and self.degree == 3:
-            # degree cannot currently be > 3
+            # Explicit degree cannot be >3.
             y_pred += _poly_predict(X, self.P_[1, :, :], self.lams_,
                                     kernel='anova', degree=2)
 
@@ -162,7 +186,7 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
         Regularization amount for higher-order weights.
 
     tol : float, default: 1e-6
-        Tolerance for the stopping condition.
+        Tolerance for the coordinate descent stopping condition.
 
     fit_lower : {'explicit'|'augment'|None}, default: 'explicit'
         Whether and how to fit lower-order, non-homogeneous terms.
@@ -183,6 +207,18 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
         coordinate descent. If False, the model can still capture linear
         effects if ``fit_lower == 'augment'``.
 
+    learning_rate: double, default: 0.001
+        Learning rate for 'adagrad' solver. Ignored by other solvers.
+
+    solver : {'cd'|'adagrad'}, default: 'cd'
+        - 'cd': Uses a coordinate descent solver. Currently limited to
+        degree=3.
+
+        - 'adagrad': Uses a stochastic gradient solver with AdaGrad.
+        Supports arbitrary degrees and scales better with higher degrees, but
+        requires the learning_rate parameter.  Currently does not support
+        ``fit_lower == 'explicit'`` nor ``init_lambdas != 'ones'``.
+
     warm_start : boolean, optional, default: False
         Whether to use the existing solution, if available. Useful for
         computing regularization paths or pre-initializing the model.
@@ -201,6 +237,12 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
 
     verbose : boolean, optional, default: False
         Whether to print debugging information.
+
+    callback : callable
+        Callback function.
+
+    n_calls : int
+        Frequency with which `callback` must be called.
 
     random_state : int seed, RandomState instance, or None (default)
         The seed of the pseudo random number generator to use for
@@ -228,6 +270,11 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
 
     References
     ----------
+    Higher-order Factorization Machines.
+    Mathieu Blondel, Akinori Fujino, Naonori Ueda, Masakazu Ishihata.
+    In: Proceedings of NIPS 2016.
+    http://arxiv.org/abs/1607.07195
+
     Polynomial Networks and Factorization Machines:
     New Insights and Efficient Training Algorithms.
     Mathieu Blondel, Masakazu Ishihata, Akinori Fujino, Naonori Ueda.
@@ -239,14 +286,15 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
     In: Proceedings of IEEE 2010.
     """
     def __init__(self, degree=2, n_components=2, alpha=1, beta=1, tol=1e-6,
-                 fit_lower='explicit', fit_linear=True, warm_start=False,
-                 init_lambdas='ones', max_iter=10000, verbose=False,
+                 fit_lower='explicit', fit_linear=True, learning_rate=0.001,
+                 solver='cd', warm_start=False, init_lambdas='ones',
+                 max_iter=10000, verbose=False, callback=None, n_calls=100,
                  random_state=None):
 
         super(FactorizationMachineRegressor, self).__init__(
             degree, 'squared', n_components, alpha, beta, tol, fit_lower,
-            fit_linear, warm_start, init_lambdas, max_iter, verbose,
-            random_state)
+            fit_linear, learning_rate, solver, warm_start, init_lambdas,
+            max_iter, verbose, callback, n_calls, random_state)
 
 
 class FactorizationMachineClassifier(_BaseFactorizationMachine,
@@ -281,7 +329,7 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
         Regularization amount for higher-order weights.
 
     tol : float, default: 1e-6
-        Tolerance for the stopping condition.
+        Tolerance for the coordinate descent stopping condition.
 
     fit_lower : {'explicit'|'augment'|None}, default: 'explicit'
         Whether and how to fit lower-order, non-homogeneous terms.
@@ -302,6 +350,18 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
         coordinate descent. If False, the model can still capture linear
         effects if ``fit_lower == 'augment'``.
 
+    learning_rate: double, default: 0.001
+        Learning rate for 'adagrad' solver. Ignored by other solvers.
+
+    solver : {'cd'|'adagrad'}, default: 'cd'
+        - 'cd': Uses a coordinate descent solver. Currently limited to
+        degree=3.
+
+        - 'adagrad': Uses a stochastic gradient solver with AdaGrad.
+        Supports arbitrary degrees and scales better with higher degrees, but
+        requires the learning_rate parameter.  Currently does not support
+        ``fit_lower == 'explicit'`` nor ``init_lambdas != 'ones'``.
+
     warm_start : boolean, optional, default: False
         Whether to use the existing solution, if available. Useful for
         computing regularization paths or pre-initializing the model.
@@ -320,6 +380,12 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
 
     verbose : boolean, optional, default: False
         Whether to print debugging information.
+
+    callback : callable
+        Callback function.
+
+    n_calls : int
+        Frequency with which `callback` must be called.
 
     random_state : int seed, RandomState instance, or None (default)
         The seed of the pseudo random number generator to use for
@@ -347,6 +413,11 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
 
     References
     ----------
+    Higher-order Factorization Machines.
+    Mathieu Blondel, Akinori Fujino, Naonori Ueda, Masakazu Ishihata.
+    In: Proceedings of NIPS 2016.
+    http://arxiv.org/abs/1607.07195
+
     Polynomial Networks and Factorization Machines:
     New Insights and Efficient Training Algorithms.
     Mathieu Blondel, Masakazu Ishihata, Akinori Fujino, Naonori Ueda.
@@ -360,10 +431,11 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
 
     def __init__(self, degree=2, loss='squared_hinge', n_components=2, alpha=1,
                  beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 warm_start=False, init_lambdas='ones', max_iter=10000,
-                 verbose=False, random_state=None):
+                 learning_rate=0.001, solver='cd', warm_start=False,
+                 init_lambdas='ones', max_iter=10000, verbose=False,
+                 callback=None, n_calls=100, random_state=None):
 
         super(FactorizationMachineClassifier, self).__init__(
             degree, loss, n_components, alpha, beta, tol, fit_lower,
-            fit_linear, warm_start, init_lambdas, max_iter, verbose,
-            random_state)
+            fit_linear, learning_rate, solver, warm_start, init_lambdas,
+            max_iter, verbose, callback, n_calls, random_state)

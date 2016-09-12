@@ -15,6 +15,8 @@ from polylearn.kernels import _poly_predict
 from polylearn import FactorizationMachineRegressor
 from polylearn import FactorizationMachineClassifier
 
+from .test_kernels import dumb_anova_grad
+
 
 def cd_direct_slow(X, y, lams=None, degree=2, n_components=5, beta=1.,
                    n_iter=10, tol=1e-5, verbose=False, random_state=None):
