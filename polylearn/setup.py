@@ -11,6 +11,8 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('loss_fast', sources=['loss_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
+    config.add_extension('kernels_fast', sources=['kernels_fast.cpp'])
+
     config.add_extension('cd_direct_fast', sources=['cd_direct_fast.cpp'],
                          include_dirs=[numpy.get_include()])
 
