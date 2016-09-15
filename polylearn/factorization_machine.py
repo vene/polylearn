@@ -158,7 +158,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
     def _predict(self, X):
         if not hasattr(self, "P_"):
             raise NotFittedError("Estimator not fitted.")
-        X = check_array(X, accept_sparse='csc', dtype=np.double)
+        X = check_array(X, accept_sparse=['csc', 'csr'], dtype=np.double)
         X = self._augment(X)
         return self._get_output(X)
 

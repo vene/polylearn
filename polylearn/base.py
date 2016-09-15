@@ -118,7 +118,7 @@ class _PolyClassifierMixin(ClassifierMixin):
                             "OneVsRest or OneVsAll metaestimators in "
                             "scikit-learn.")
 
-        X, Y = check_X_y(X, y, dtype=np.double, accept_sparse='csc',
+        X, Y = check_X_y(X, y, dtype=np.double, accept_sparse=['csc', 'csr'],
                          multi_output=False)
 
         self.label_binarizer_ = LabelBinarizer(pos_label=1, neg_label=-1)
