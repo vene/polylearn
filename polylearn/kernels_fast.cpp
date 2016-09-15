@@ -2300,7 +2300,9 @@ static PyObject *__pyx_pf_9polylearn_12kernels_fast_2_fast_anova_grad(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "polylearn/kernels_fast.pxd":1
+/* "polylearn/kernels_fast.pxd":7
+ * 
+ * 
  * cdef inline double _fast_anova_kernel(double[::1, :] A,             # <<<<<<<<<<<<<<
  *                                       double[:, ::1] P,
  *                                       Py_ssize_t s,
@@ -2339,7 +2341,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   size_t __pyx_t_25;
   __Pyx_RefNannySetupContext("_fast_anova_kernel", 0);
 
-  /* "polylearn/kernels_fast.pxd":11
+  /* "polylearn/kernels_fast.pxd":17
  *     cdef Py_ssize_t t, j, jj
  * 
  *     for jj in range(nnz + 1):             # <<<<<<<<<<<<<<
@@ -2350,7 +2352,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_jj = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":12
+    /* "polylearn/kernels_fast.pxd":18
  * 
  *     for jj in range(nnz + 1):
  *         A[jj, 0] = 1             # <<<<<<<<<<<<<<
@@ -2362,7 +2364,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_3)) ) + __pyx_t_4 * __pyx_v_A.strides[1]) )) = 1.0;
   }
 
-  /* "polylearn/kernels_fast.pxd":14
+  /* "polylearn/kernels_fast.pxd":20
  *         A[jj, 0] = 1
  * 
  *     for t in range(1, degree + 1):             # <<<<<<<<<<<<<<
@@ -2373,7 +2375,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   for (__pyx_t_2 = 1; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_t = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":15
+    /* "polylearn/kernels_fast.pxd":21
  * 
  *     for t in range(1, degree + 1):
  *         for jj in range(0, t):             # <<<<<<<<<<<<<<
@@ -2384,7 +2386,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_jj = __pyx_t_6;
 
-      /* "polylearn/kernels_fast.pxd":16
+      /* "polylearn/kernels_fast.pxd":22
  *     for t in range(1, degree + 1):
  *         for jj in range(0, t):
  *             A[jj, t] = 0             # <<<<<<<<<<<<<<
@@ -2396,7 +2398,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
       *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_7)) ) + __pyx_t_8 * __pyx_v_A.strides[1]) )) = 0.0;
     }
 
-    /* "polylearn/kernels_fast.pxd":18
+    /* "polylearn/kernels_fast.pxd":24
  *             A[jj, t] = 0
  * 
  *         for jj in range(t, nnz + 1):             # <<<<<<<<<<<<<<
@@ -2407,7 +2409,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     for (__pyx_t_5 = __pyx_v_t; __pyx_t_5 < __pyx_t_9; __pyx_t_5+=1) {
       __pyx_v_jj = __pyx_t_5;
 
-      /* "polylearn/kernels_fast.pxd":19
+      /* "polylearn/kernels_fast.pxd":25
  * 
  *         for jj in range(t, nnz + 1):
  *             j = indices[jj - 1]             # <<<<<<<<<<<<<<
@@ -2416,7 +2418,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
  */
       __pyx_v_j = (__pyx_v_indices[(__pyx_v_jj - 1)]);
 
-      /* "polylearn/kernels_fast.pxd":20
+      /* "polylearn/kernels_fast.pxd":26
  *         for jj in range(t, nnz + 1):
  *             j = indices[jj - 1]
  *             A[jj, t] = P[s, j]             # <<<<<<<<<<<<<<
@@ -2429,7 +2431,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
       __pyx_t_13 = __pyx_v_t;
       *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_12)) ) + __pyx_t_13 * __pyx_v_A.strides[1]) )) = (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_P.data + __pyx_t_10 * __pyx_v_P.strides[0]) )) + __pyx_t_11)) )));
 
-      /* "polylearn/kernels_fast.pxd":21
+      /* "polylearn/kernels_fast.pxd":27
  *             j = indices[jj - 1]
  *             A[jj, t] = P[s, j]
  *             A[jj, t] *= data[jj - 1]             # <<<<<<<<<<<<<<
@@ -2440,7 +2442,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
       __pyx_t_15 = __pyx_v_t;
       *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_14)) ) + __pyx_t_15 * __pyx_v_A.strides[1]) )) *= (__pyx_v_data[(__pyx_v_jj - 1)]);
 
-      /* "polylearn/kernels_fast.pxd":22
+      /* "polylearn/kernels_fast.pxd":28
  *             A[jj, t] = P[s, j]
  *             A[jj, t] *= data[jj - 1]
  *             A[jj, t] *= A[jj - 1, t - 1]             # <<<<<<<<<<<<<<
@@ -2453,7 +2455,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
       __pyx_t_19 = __pyx_v_t;
       *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_18)) ) + __pyx_t_19 * __pyx_v_A.strides[1]) )) *= (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_16)) ) + __pyx_t_17 * __pyx_v_A.strides[1]) )));
 
-      /* "polylearn/kernels_fast.pxd":23
+      /* "polylearn/kernels_fast.pxd":29
  *             A[jj, t] *= data[jj - 1]
  *             A[jj, t] *= A[jj - 1, t - 1]
  *             A[jj, t] += A[jj - 1, t]             # <<<<<<<<<<<<<<
@@ -2468,7 +2470,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":25
+  /* "polylearn/kernels_fast.pxd":31
  *             A[jj, t] += A[jj - 1, t]
  * 
  *     return A[nnz, degree]             # <<<<<<<<<<<<<<
@@ -2480,7 +2482,9 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   __pyx_r = (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_24)) ) + __pyx_t_25 * __pyx_v_A.strides[1]) )));
   goto __pyx_L0;
 
-  /* "polylearn/kernels_fast.pxd":1
+  /* "polylearn/kernels_fast.pxd":7
+ * 
+ * 
  * cdef inline double _fast_anova_kernel(double[::1, :] A,             # <<<<<<<<<<<<<<
  *                                       double[:, ::1] P,
  *                                       Py_ssize_t s,
@@ -2492,7 +2496,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   return __pyx_r;
 }
 
-/* "polylearn/kernels_fast.pxd":28
+/* "polylearn/kernels_fast.pxd":34
  * 
  * 
  * cdef inline double _fast_anova_kernel_grad(double[::1, :] A,             # <<<<<<<<<<<<<<
@@ -2543,7 +2547,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   Py_ssize_t __pyx_t_34;
   __Pyx_RefNannySetupContext("_fast_anova_kernel_grad", 0);
 
-  /* "polylearn/kernels_fast.pxd":40
+  /* "polylearn/kernels_fast.pxd":46
  * 
  *     # computing the kernel value has the side effect of filling up A
  *     cdef double val = _fast_anova_kernel(A, P, s, indices, data, nnz, degree)             # <<<<<<<<<<<<<<
@@ -2552,7 +2556,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
  */
   __pyx_v_val = __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel(__pyx_v_A, __pyx_v_P, __pyx_v_s, __pyx_v_indices, __pyx_v_data, __pyx_v_nnz, __pyx_v_degree);
 
-  /* "polylearn/kernels_fast.pxd":44
+  /* "polylearn/kernels_fast.pxd":50
  * 
  *     # initialize memory
  *     for t in range(0, degree + 1):             # <<<<<<<<<<<<<<
@@ -2563,7 +2567,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_t = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":45
+    /* "polylearn/kernels_fast.pxd":51
  *     # initialize memory
  *     for t in range(0, degree + 1):
  *         for jj in range(0, nnz + 1):             # <<<<<<<<<<<<<<
@@ -2574,7 +2578,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_jj = __pyx_t_4;
 
-      /* "polylearn/kernels_fast.pxd":46
+      /* "polylearn/kernels_fast.pxd":52
  *     for t in range(0, degree + 1):
  *         for jj in range(0, nnz + 1):
  *             Ad[jj, t] = 0             # <<<<<<<<<<<<<<
@@ -2587,7 +2591,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":48
+  /* "polylearn/kernels_fast.pxd":54
  *             Ad[jj, t] = 0
  * 
  *     Ad[nnz, degree] = 1             # <<<<<<<<<<<<<<
@@ -2598,7 +2602,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   __pyx_t_8 = __pyx_v_degree;
   *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_7)) ) + __pyx_t_8 * __pyx_v_Ad.strides[1]) )) = 1.0;
 
-  /* "polylearn/kernels_fast.pxd":50
+  /* "polylearn/kernels_fast.pxd":56
  *     Ad[nnz, degree] = 1
  * 
  *     for t in range(degree, 0, -1):             # <<<<<<<<<<<<<<
@@ -2608,7 +2612,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   for (__pyx_t_2 = __pyx_v_degree; __pyx_t_2 > 0; __pyx_t_2-=1) {
     __pyx_v_t = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":51
+    /* "polylearn/kernels_fast.pxd":57
  * 
  *     for t in range(degree, 0, -1):
  *         for jj in range(nnz, t - 1, -1):             # <<<<<<<<<<<<<<
@@ -2619,7 +2623,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     for (__pyx_t_9 = __pyx_v_nnz; __pyx_t_9 > __pyx_t_4; __pyx_t_9-=1) {
       __pyx_v_jj = __pyx_t_9;
 
-      /* "polylearn/kernels_fast.pxd":52
+      /* "polylearn/kernels_fast.pxd":58
  *     for t in range(degree, 0, -1):
  *         for jj in range(nnz, t - 1, -1):
  *             if jj < nnz:             # <<<<<<<<<<<<<<
@@ -2629,7 +2633,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
       __pyx_t_10 = ((__pyx_v_jj < __pyx_v_nnz) != 0);
       if (__pyx_t_10) {
 
-        /* "polylearn/kernels_fast.pxd":53
+        /* "polylearn/kernels_fast.pxd":59
  *         for jj in range(nnz, t - 1, -1):
  *             if jj < nnz:
  *                 if t < degree:             # <<<<<<<<<<<<<<
@@ -2639,7 +2643,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
         __pyx_t_10 = ((__pyx_v_t < __pyx_v_degree) != 0);
         if (__pyx_t_10) {
 
-          /* "polylearn/kernels_fast.pxd":54
+          /* "polylearn/kernels_fast.pxd":60
  *             if jj < nnz:
  *                 if t < degree:
  *                     j = indices[jj]             # <<<<<<<<<<<<<<
@@ -2648,7 +2652,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
  */
           __pyx_v_j = (__pyx_v_indices[__pyx_v_jj]);
 
-          /* "polylearn/kernels_fast.pxd":55
+          /* "polylearn/kernels_fast.pxd":61
  *                 if t < degree:
  *                     j = indices[jj]
  *                     Ad[jj, t] = Ad[jj + 1, t + 1]             # <<<<<<<<<<<<<<
@@ -2661,7 +2665,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
           __pyx_t_14 = __pyx_v_t;
           *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_13)) ) + __pyx_t_14 * __pyx_v_Ad.strides[1]) )) = (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_11)) ) + __pyx_t_12 * __pyx_v_Ad.strides[1]) )));
 
-          /* "polylearn/kernels_fast.pxd":56
+          /* "polylearn/kernels_fast.pxd":62
  *                     j = indices[jj]
  *                     Ad[jj, t] = Ad[jj + 1, t + 1]
  *                     Ad[jj, t] *= P[s, j]             # <<<<<<<<<<<<<<
@@ -2674,7 +2678,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
           __pyx_t_18 = __pyx_v_t;
           *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_17)) ) + __pyx_t_18 * __pyx_v_Ad.strides[1]) )) *= (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_P.data + __pyx_t_15 * __pyx_v_P.strides[0]) )) + __pyx_t_16)) )));
 
-          /* "polylearn/kernels_fast.pxd":57
+          /* "polylearn/kernels_fast.pxd":63
  *                     Ad[jj, t] = Ad[jj + 1, t + 1]
  *                     Ad[jj, t] *= P[s, j]
  *                     Ad[jj, t] *= data[jj]             # <<<<<<<<<<<<<<
@@ -2685,7 +2689,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
           __pyx_t_20 = __pyx_v_t;
           *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_19)) ) + __pyx_t_20 * __pyx_v_Ad.strides[1]) )) *= (__pyx_v_data[__pyx_v_jj]);
 
-          /* "polylearn/kernels_fast.pxd":53
+          /* "polylearn/kernels_fast.pxd":59
  *         for jj in range(nnz, t - 1, -1):
  *             if jj < nnz:
  *                 if t < degree:             # <<<<<<<<<<<<<<
@@ -2694,7 +2698,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
  */
         }
 
-        /* "polylearn/kernels_fast.pxd":59
+        /* "polylearn/kernels_fast.pxd":65
  *                     Ad[jj, t] *= data[jj]
  * 
  *                 Ad[jj, t] += Ad[jj + 1, t]             # <<<<<<<<<<<<<<
@@ -2707,7 +2711,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
         __pyx_t_24 = __pyx_v_t;
         *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_23)) ) + __pyx_t_24 * __pyx_v_Ad.strides[1]) )) += (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_21)) ) + __pyx_t_22 * __pyx_v_Ad.strides[1]) )));
 
-        /* "polylearn/kernels_fast.pxd":52
+        /* "polylearn/kernels_fast.pxd":58
  *     for t in range(degree, 0, -1):
  *         for jj in range(nnz, t - 1, -1):
  *             if jj < nnz:             # <<<<<<<<<<<<<<
@@ -2718,7 +2722,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":62
+  /* "polylearn/kernels_fast.pxd":68
  * 
  * 
  *     for jj in range(nnz):             # <<<<<<<<<<<<<<
@@ -2729,7 +2733,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_25; __pyx_t_2+=1) {
     __pyx_v_jj = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":63
+    /* "polylearn/kernels_fast.pxd":69
  * 
  *     for jj in range(nnz):
  *         out[s, jj] = 0             # <<<<<<<<<<<<<<
@@ -2740,7 +2744,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     __pyx_t_27 = __pyx_v_jj;
     *((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_out.data + __pyx_t_26 * __pyx_v_out.strides[0]) )) + __pyx_t_27)) )) = 0.0;
 
-    /* "polylearn/kernels_fast.pxd":64
+    /* "polylearn/kernels_fast.pxd":70
  *     for jj in range(nnz):
  *         out[s, jj] = 0
  *         for t in range(degree):             # <<<<<<<<<<<<<<
@@ -2751,7 +2755,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_28; __pyx_t_4+=1) {
       __pyx_v_t = __pyx_t_4;
 
-      /* "polylearn/kernels_fast.pxd":65
+      /* "polylearn/kernels_fast.pxd":71
  *         out[s, jj] = 0
  *         for t in range(degree):
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]             # <<<<<<<<<<<<<<
@@ -2768,7 +2772,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":67
+  /* "polylearn/kernels_fast.pxd":73
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]
  * 
  *     return val             # <<<<<<<<<<<<<<
@@ -2776,7 +2780,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   __pyx_r = __pyx_v_val;
   goto __pyx_L0;
 
-  /* "polylearn/kernels_fast.pxd":28
+  /* "polylearn/kernels_fast.pxd":34
  * 
  * 
  * cdef inline double _fast_anova_kernel_grad(double[::1, :] A,             # <<<<<<<<<<<<<<
@@ -15135,7 +15139,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 17, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(2, 131, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 146, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(2, 149, __pyx_L1_error)

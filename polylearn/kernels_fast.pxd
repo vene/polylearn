@@ -1,3 +1,9 @@
+# cython: language_level=3
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+
+
 cdef inline double _fast_anova_kernel(double[::1, :] A,
                                       double[:, ::1] P,
                                       Py_ssize_t s,
