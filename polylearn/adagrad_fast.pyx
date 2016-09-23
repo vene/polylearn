@@ -93,7 +93,7 @@ def _fast_fm_adagrad(self,
 
     P_grad_data = np.empty_like(P)
     A = np.empty((n_features + 1, degree + 1), order='f')
-    Ad = np.empty_like(A, order='f')
+    Ad = np.empty((n_features + 2, degree + 2), order='f')
 
     # adagrad bookkeeping
     cdef double[::1] w_grad_norms

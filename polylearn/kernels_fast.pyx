@@ -59,7 +59,7 @@ def _fast_anova_grad(RowDataset X,
                                   format='d',
                                   mode='fortran')
 
-    cdef double[::1, :] Ad = array(shape=(n_features + 1, degree + 1),
+    cdef double[::1, :] Ad = array(shape=(n_features + 2, degree + 2),
                                    itemsize=sizeof(double),
                                    format='d',
                                    mode='fortran')

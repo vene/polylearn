@@ -47,23 +47,19 @@ cdef inline double _fast_anova_kernel_grad(double[::1, :] A,
     cdef Py_ssize_t t, j, jj
 
     # initialize memory
-    for t in range(0, degree + 1):
-        for jj in range(0, nnz + 1):
+    for t in range(0, degree + 2):
+        for jj in range(0, nnz + 2):
             Ad[jj, t] = 0
 
     Ad[nnz, degree] = 1
 
     for t in range(degree, 0, -1):
-        for jj in range(nnz, t - 1, -1):
-            if jj < nnz:
-                if t < degree:
-                    j = indices[jj]
-                    Ad[jj, t] = Ad[jj + 1, t + 1]
-                    Ad[jj, t] *= P[s, j]
-                    Ad[jj, t] *= data[jj]
-
-                Ad[jj, t] += Ad[jj + 1, t]
-
+        for jj in range(nnz - 1, t - 1, -1):
+            j = indices[jj]
+            Ad[jj, t] = Ad[jj + 1, t + 1]
+            Ad[jj, t] *= P[s, j]
+            Ad[jj, t] *= data[jj]
+            Ad[jj, t] += Ad[jj + 1, t]
 
     for jj in range(nnz):
         out[s, jj] = 0

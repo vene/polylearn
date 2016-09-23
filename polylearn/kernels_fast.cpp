@@ -2192,15 +2192,15 @@ static PyObject *__pyx_pf_9polylearn_12kernels_fast_2_fast_anova_grad(CYTHON_UNU
   /* "polylearn/kernels_fast.pyx":62
  *                                   mode='fortran')
  * 
- *     cdef double[::1, :] Ad = array(shape=(n_features + 1, degree + 1),             # <<<<<<<<<<<<<<
+ *     cdef double[::1, :] Ad = array(shape=(n_features + 2, degree + 2),             # <<<<<<<<<<<<<<
  *                                    itemsize=sizeof(double),
  *                                    format='d',
  */
   __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_n_features + 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 62, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_n_features + 2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_degree + 1)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 62, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_degree + 2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -2215,7 +2215,7 @@ static PyObject *__pyx_pf_9polylearn_12kernels_fast_2_fast_anova_grad(CYTHON_UNU
 
   /* "polylearn/kernels_fast.pyx":63
  * 
- *     cdef double[::1, :] Ad = array(shape=(n_features + 1, degree + 1),
+ *     cdef double[::1, :] Ad = array(shape=(n_features + 2, degree + 2),
  *                                    itemsize=sizeof(double),             # <<<<<<<<<<<<<<
  *                                    format='d',
  *                                    mode='fortran')
@@ -2230,7 +2230,7 @@ static PyObject *__pyx_pf_9polylearn_12kernels_fast_2_fast_anova_grad(CYTHON_UNU
   /* "polylearn/kernels_fast.pyx":62
  *                                   mode='fortran')
  * 
- *     cdef double[::1, :] Ad = array(shape=(n_features + 1, degree + 1),             # <<<<<<<<<<<<<<
+ *     cdef double[::1, :] Ad = array(shape=(n_features + 2, degree + 2),             # <<<<<<<<<<<<<<
  *                                    itemsize=sizeof(double),
  *                                    format='d',
  */
@@ -2520,7 +2520,7 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   Py_ssize_t __pyx_t_7;
   size_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
-  int __pyx_t_10;
+  Py_ssize_t __pyx_t_10;
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
@@ -2534,17 +2534,16 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
   Py_ssize_t __pyx_t_23;
-  Py_ssize_t __pyx_t_24;
-  int __pyx_t_25;
+  int __pyx_t_24;
+  Py_ssize_t __pyx_t_25;
   Py_ssize_t __pyx_t_26;
-  Py_ssize_t __pyx_t_27;
-  unsigned int __pyx_t_28;
+  unsigned int __pyx_t_27;
+  Py_ssize_t __pyx_t_28;
   Py_ssize_t __pyx_t_29;
   Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
   Py_ssize_t __pyx_t_32;
   Py_ssize_t __pyx_t_33;
-  Py_ssize_t __pyx_t_34;
   __Pyx_RefNannySetupContext("_fast_anova_kernel_grad", 0);
 
   /* "polylearn/kernels_fast.pxd":46
@@ -2559,28 +2558,28 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
   /* "polylearn/kernels_fast.pxd":50
  * 
  *     # initialize memory
- *     for t in range(0, degree + 1):             # <<<<<<<<<<<<<<
- *         for jj in range(0, nnz + 1):
+ *     for t in range(0, degree + 2):             # <<<<<<<<<<<<<<
+ *         for jj in range(0, nnz + 2):
  *             Ad[jj, t] = 0
  */
-  __pyx_t_1 = (__pyx_v_degree + 1);
+  __pyx_t_1 = (__pyx_v_degree + 2);
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_t = __pyx_t_2;
 
     /* "polylearn/kernels_fast.pxd":51
  *     # initialize memory
- *     for t in range(0, degree + 1):
- *         for jj in range(0, nnz + 1):             # <<<<<<<<<<<<<<
+ *     for t in range(0, degree + 2):
+ *         for jj in range(0, nnz + 2):             # <<<<<<<<<<<<<<
  *             Ad[jj, t] = 0
  * 
  */
-    __pyx_t_3 = (__pyx_v_nnz + 1);
+    __pyx_t_3 = (__pyx_v_nnz + 2);
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_jj = __pyx_t_4;
 
       /* "polylearn/kernels_fast.pxd":52
- *     for t in range(0, degree + 1):
- *         for jj in range(0, nnz + 1):
+ *     for t in range(0, degree + 2):
+ *         for jj in range(0, nnz + 2):
  *             Ad[jj, t] = 0             # <<<<<<<<<<<<<<
  * 
  *     Ad[nnz, degree] = 1
@@ -2606,8 +2605,8 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
  *     Ad[nnz, degree] = 1
  * 
  *     for t in range(degree, 0, -1):             # <<<<<<<<<<<<<<
- *         for jj in range(nnz, t - 1, -1):
- *             if jj < nnz:
+ *         for jj in range(nnz - 1, t - 1, -1):
+ *             j = indices[jj]
  */
   for (__pyx_t_2 = __pyx_v_degree; __pyx_t_2 > 0; __pyx_t_2-=1) {
     __pyx_v_t = __pyx_t_2;
@@ -2615,164 +2614,126 @@ static CYTHON_INLINE double __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel
     /* "polylearn/kernels_fast.pxd":57
  * 
  *     for t in range(degree, 0, -1):
- *         for jj in range(nnz, t - 1, -1):             # <<<<<<<<<<<<<<
- *             if jj < nnz:
- *                 if t < degree:
+ *         for jj in range(nnz - 1, t - 1, -1):             # <<<<<<<<<<<<<<
+ *             j = indices[jj]
+ *             Ad[jj, t] = Ad[jj + 1, t + 1]
  */
     __pyx_t_4 = (__pyx_v_t - 1);
-    for (__pyx_t_9 = __pyx_v_nnz; __pyx_t_9 > __pyx_t_4; __pyx_t_9-=1) {
+    for (__pyx_t_9 = (__pyx_v_nnz - 1); __pyx_t_9 > __pyx_t_4; __pyx_t_9-=1) {
       __pyx_v_jj = __pyx_t_9;
 
       /* "polylearn/kernels_fast.pxd":58
  *     for t in range(degree, 0, -1):
- *         for jj in range(nnz, t - 1, -1):
- *             if jj < nnz:             # <<<<<<<<<<<<<<
- *                 if t < degree:
- *                     j = indices[jj]
+ *         for jj in range(nnz - 1, t - 1, -1):
+ *             j = indices[jj]             # <<<<<<<<<<<<<<
+ *             Ad[jj, t] = Ad[jj + 1, t + 1]
+ *             Ad[jj, t] *= P[s, j]
  */
-      __pyx_t_10 = ((__pyx_v_jj < __pyx_v_nnz) != 0);
-      if (__pyx_t_10) {
+      __pyx_v_j = (__pyx_v_indices[__pyx_v_jj]);
 
-        /* "polylearn/kernels_fast.pxd":59
- *         for jj in range(nnz, t - 1, -1):
- *             if jj < nnz:
- *                 if t < degree:             # <<<<<<<<<<<<<<
- *                     j = indices[jj]
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]
+      /* "polylearn/kernels_fast.pxd":59
+ *         for jj in range(nnz - 1, t - 1, -1):
+ *             j = indices[jj]
+ *             Ad[jj, t] = Ad[jj + 1, t + 1]             # <<<<<<<<<<<<<<
+ *             Ad[jj, t] *= P[s, j]
+ *             Ad[jj, t] *= data[jj]
  */
-        __pyx_t_10 = ((__pyx_v_t < __pyx_v_degree) != 0);
-        if (__pyx_t_10) {
+      __pyx_t_10 = (__pyx_v_jj + 1);
+      __pyx_t_11 = (__pyx_v_t + 1);
+      __pyx_t_12 = __pyx_v_jj;
+      __pyx_t_13 = __pyx_v_t;
+      *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_12)) ) + __pyx_t_13 * __pyx_v_Ad.strides[1]) )) = (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_10)) ) + __pyx_t_11 * __pyx_v_Ad.strides[1]) )));
 
-          /* "polylearn/kernels_fast.pxd":60
- *             if jj < nnz:
- *                 if t < degree:
- *                     j = indices[jj]             # <<<<<<<<<<<<<<
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]
- *                     Ad[jj, t] *= P[s, j]
+      /* "polylearn/kernels_fast.pxd":60
+ *             j = indices[jj]
+ *             Ad[jj, t] = Ad[jj + 1, t + 1]
+ *             Ad[jj, t] *= P[s, j]             # <<<<<<<<<<<<<<
+ *             Ad[jj, t] *= data[jj]
+ *             Ad[jj, t] += Ad[jj + 1, t]
  */
-          __pyx_v_j = (__pyx_v_indices[__pyx_v_jj]);
+      __pyx_t_14 = __pyx_v_s;
+      __pyx_t_15 = __pyx_v_j;
+      __pyx_t_16 = __pyx_v_jj;
+      __pyx_t_17 = __pyx_v_t;
+      *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_16)) ) + __pyx_t_17 * __pyx_v_Ad.strides[1]) )) *= (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_P.data + __pyx_t_14 * __pyx_v_P.strides[0]) )) + __pyx_t_15)) )));
 
-          /* "polylearn/kernels_fast.pxd":61
- *                 if t < degree:
- *                     j = indices[jj]
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]             # <<<<<<<<<<<<<<
- *                     Ad[jj, t] *= P[s, j]
- *                     Ad[jj, t] *= data[jj]
- */
-          __pyx_t_11 = (__pyx_v_jj + 1);
-          __pyx_t_12 = (__pyx_v_t + 1);
-          __pyx_t_13 = __pyx_v_jj;
-          __pyx_t_14 = __pyx_v_t;
-          *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_13)) ) + __pyx_t_14 * __pyx_v_Ad.strides[1]) )) = (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_11)) ) + __pyx_t_12 * __pyx_v_Ad.strides[1]) )));
-
-          /* "polylearn/kernels_fast.pxd":62
- *                     j = indices[jj]
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]
- *                     Ad[jj, t] *= P[s, j]             # <<<<<<<<<<<<<<
- *                     Ad[jj, t] *= data[jj]
+      /* "polylearn/kernels_fast.pxd":61
+ *             Ad[jj, t] = Ad[jj + 1, t + 1]
+ *             Ad[jj, t] *= P[s, j]
+ *             Ad[jj, t] *= data[jj]             # <<<<<<<<<<<<<<
+ *             Ad[jj, t] += Ad[jj + 1, t]
  * 
  */
-          __pyx_t_15 = __pyx_v_s;
-          __pyx_t_16 = __pyx_v_j;
-          __pyx_t_17 = __pyx_v_jj;
-          __pyx_t_18 = __pyx_v_t;
-          *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_17)) ) + __pyx_t_18 * __pyx_v_Ad.strides[1]) )) *= (*((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_P.data + __pyx_t_15 * __pyx_v_P.strides[0]) )) + __pyx_t_16)) )));
+      __pyx_t_18 = __pyx_v_jj;
+      __pyx_t_19 = __pyx_v_t;
+      *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_18)) ) + __pyx_t_19 * __pyx_v_Ad.strides[1]) )) *= (__pyx_v_data[__pyx_v_jj]);
 
-          /* "polylearn/kernels_fast.pxd":63
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]
- *                     Ad[jj, t] *= P[s, j]
- *                     Ad[jj, t] *= data[jj]             # <<<<<<<<<<<<<<
+      /* "polylearn/kernels_fast.pxd":62
+ *             Ad[jj, t] *= P[s, j]
+ *             Ad[jj, t] *= data[jj]
+ *             Ad[jj, t] += Ad[jj + 1, t]             # <<<<<<<<<<<<<<
  * 
- *                 Ad[jj, t] += Ad[jj + 1, t]
+ *     for jj in range(nnz):
  */
-          __pyx_t_19 = __pyx_v_jj;
-          __pyx_t_20 = __pyx_v_t;
-          *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_19)) ) + __pyx_t_20 * __pyx_v_Ad.strides[1]) )) *= (__pyx_v_data[__pyx_v_jj]);
-
-          /* "polylearn/kernels_fast.pxd":59
- *         for jj in range(nnz, t - 1, -1):
- *             if jj < nnz:
- *                 if t < degree:             # <<<<<<<<<<<<<<
- *                     j = indices[jj]
- *                     Ad[jj, t] = Ad[jj + 1, t + 1]
- */
-        }
-
-        /* "polylearn/kernels_fast.pxd":65
- *                     Ad[jj, t] *= data[jj]
- * 
- *                 Ad[jj, t] += Ad[jj + 1, t]             # <<<<<<<<<<<<<<
- * 
- * 
- */
-        __pyx_t_21 = (__pyx_v_jj + 1);
-        __pyx_t_22 = __pyx_v_t;
-        __pyx_t_23 = __pyx_v_jj;
-        __pyx_t_24 = __pyx_v_t;
-        *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_23)) ) + __pyx_t_24 * __pyx_v_Ad.strides[1]) )) += (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_21)) ) + __pyx_t_22 * __pyx_v_Ad.strides[1]) )));
-
-        /* "polylearn/kernels_fast.pxd":58
- *     for t in range(degree, 0, -1):
- *         for jj in range(nnz, t - 1, -1):
- *             if jj < nnz:             # <<<<<<<<<<<<<<
- *                 if t < degree:
- *                     j = indices[jj]
- */
-      }
+      __pyx_t_20 = (__pyx_v_jj + 1);
+      __pyx_t_21 = __pyx_v_t;
+      __pyx_t_22 = __pyx_v_jj;
+      __pyx_t_23 = __pyx_v_t;
+      *((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_22)) ) + __pyx_t_23 * __pyx_v_Ad.strides[1]) )) += (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_20)) ) + __pyx_t_21 * __pyx_v_Ad.strides[1]) )));
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":68
- * 
+  /* "polylearn/kernels_fast.pxd":64
+ *             Ad[jj, t] += Ad[jj + 1, t]
  * 
  *     for jj in range(nnz):             # <<<<<<<<<<<<<<
  *         out[s, jj] = 0
  *         for t in range(degree):
  */
-  __pyx_t_25 = __pyx_v_nnz;
-  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_25; __pyx_t_2+=1) {
+  __pyx_t_24 = __pyx_v_nnz;
+  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_24; __pyx_t_2+=1) {
     __pyx_v_jj = __pyx_t_2;
 
-    /* "polylearn/kernels_fast.pxd":69
+    /* "polylearn/kernels_fast.pxd":65
  * 
  *     for jj in range(nnz):
  *         out[s, jj] = 0             # <<<<<<<<<<<<<<
  *         for t in range(degree):
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]
  */
-    __pyx_t_26 = __pyx_v_s;
-    __pyx_t_27 = __pyx_v_jj;
-    *((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_out.data + __pyx_t_26 * __pyx_v_out.strides[0]) )) + __pyx_t_27)) )) = 0.0;
+    __pyx_t_25 = __pyx_v_s;
+    __pyx_t_26 = __pyx_v_jj;
+    *((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_out.data + __pyx_t_25 * __pyx_v_out.strides[0]) )) + __pyx_t_26)) )) = 0.0;
 
-    /* "polylearn/kernels_fast.pxd":70
+    /* "polylearn/kernels_fast.pxd":66
  *     for jj in range(nnz):
  *         out[s, jj] = 0
  *         for t in range(degree):             # <<<<<<<<<<<<<<
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]
  * 
  */
-    __pyx_t_28 = __pyx_v_degree;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_28; __pyx_t_4+=1) {
+    __pyx_t_27 = __pyx_v_degree;
+    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_27; __pyx_t_4+=1) {
       __pyx_v_t = __pyx_t_4;
 
-      /* "polylearn/kernels_fast.pxd":71
+      /* "polylearn/kernels_fast.pxd":67
  *         out[s, jj] = 0
  *         for t in range(degree):
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]             # <<<<<<<<<<<<<<
  * 
  *     return val
  */
-      __pyx_t_29 = (__pyx_v_jj + 1);
-      __pyx_t_30 = (__pyx_v_t + 1);
-      __pyx_t_31 = __pyx_v_jj;
-      __pyx_t_32 = __pyx_v_t;
-      __pyx_t_33 = __pyx_v_s;
-      __pyx_t_34 = __pyx_v_jj;
-      *((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_out.data + __pyx_t_33 * __pyx_v_out.strides[0]) )) + __pyx_t_34)) )) += (((*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_29)) ) + __pyx_t_30 * __pyx_v_Ad.strides[1]) ))) * (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_31)) ) + __pyx_t_32 * __pyx_v_A.strides[1]) )))) * (__pyx_v_data[__pyx_v_jj]));
+      __pyx_t_28 = (__pyx_v_jj + 1);
+      __pyx_t_29 = (__pyx_v_t + 1);
+      __pyx_t_30 = __pyx_v_jj;
+      __pyx_t_31 = __pyx_v_t;
+      __pyx_t_32 = __pyx_v_s;
+      __pyx_t_33 = __pyx_v_jj;
+      *((double *) ( /* dim=1 */ ((char *) (((double *) ( /* dim=0 */ (__pyx_v_out.data + __pyx_t_32 * __pyx_v_out.strides[0]) )) + __pyx_t_33)) )) += (((*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_Ad.data) + __pyx_t_28)) ) + __pyx_t_29 * __pyx_v_Ad.strides[1]) ))) * (*((double *) ( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_A.data) + __pyx_t_30)) ) + __pyx_t_31 * __pyx_v_A.strides[1]) )))) * (__pyx_v_data[__pyx_v_jj]));
     }
   }
 
-  /* "polylearn/kernels_fast.pxd":73
+  /* "polylearn/kernels_fast.pxd":69
  *             out[s, jj] += Ad[jj + 1, t + 1]  * A[jj, t] * data[jj]
  * 
  *     return val             # <<<<<<<<<<<<<<
