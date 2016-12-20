@@ -95,11 +95,12 @@ def anova_kernel(X, P, degree=2, method='auto'):
     """
 
     if degree > 3 or method == 'dp':
+        P = np.asfortranarray(P)
         n_samples = X.shape[0]
         n_components = P.shape[0]
         ds = get_dataset(X, 'c')
 
-        K = np.empty((n_samples, n_components))
+        K = np.empty((n_samples, n_components), order='c')
         _fast_anova_kernel_batch(ds, P, degree, K)
 
     elif degree == 2:
@@ -121,7 +122,8 @@ def anova_grad(X, i, P, degree=2):
     """Computes the ANOVA gradient of the i-th row of X, wrt to P"""
 
     ds = get_dataset(X, 'c')
-    grad = np.empty_like(P)
+    P = np.asfortranarray(P)
+    grad = np.empty_like(P, order='f')
     _fast_anova_grad(ds, i, P, degree, grad)
     return grad
 

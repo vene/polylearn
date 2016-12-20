@@ -16,25 +16,29 @@ from polylearn import (FactorizationMachineClassifier,
 
 
 estimators = {
-    'fm-2': FactorizationMachineClassifier(n_components=30,
+    'fm-2': FactorizationMachineClassifier(beta=0.0001,
+                                           n_components=30,
                                            fit_linear=False,
                                            fit_lower=None,
                                            degree=2,
                                            random_state=0,
-                                           max_iter=10),
+                                           max_iter=20,
+                                           tol=1e-10),
 
-    'polynet-2': PolynomialNetworkClassifier(n_components=15, degree=2,
+    'polynet-2': PolynomialNetworkClassifier(beta=0.0001,
+                                             n_components=15,
+                                             degree=2,
                                              fit_lower=None,
-                                             max_iter=10,
-                                             random_state=0)
+                                             max_iter=20,
+                                             random_state=0,
+                                             tol=1e-10)
 }
 
 estimators['fm-3'] = clone(estimators['fm-2']).set_params(degree=3)
 estimators['fm-2-ada'] = clone(estimators['fm-2']).set_params(
-    solver='adagrad', learning_rate=0.01, max_iter=20)
+    solver='adagrad')
 estimators['fm-3-ada'] = clone(estimators['fm-3']).set_params(
-    solver='adagrad', learning_rate=0.01, max_iter=20
-)
+    solver='adagrad')
 estimators['polynet-3'] = (clone(estimators['polynet-2'])
                            .set_params(degree=3, n_components=10))
 
@@ -68,7 +72,7 @@ if __name__ == '__main__':
     for name, clf in sorted(estimators.items()):
         print("Training %s ... " % name, end="")
         if 'ada' in name:
-            X_train, X_teest = X_train_csr, X_test_csr
+            X_train, X_test = X_train_csr, X_test_csr
         else:
             X_train, X_test = X_train_csc, X_test_csc
         t0 = time()

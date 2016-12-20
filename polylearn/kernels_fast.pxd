@@ -5,7 +5,7 @@
 
 
 cdef inline double _fast_anova_kernel(double[::1, :] A,
-                                      double[:, ::1] P,
+                                      double[::1, :] P,
                                       Py_ssize_t s,
                                       int* indices,
                                       double* data,
@@ -33,13 +33,13 @@ cdef inline double _fast_anova_kernel(double[::1, :] A,
 
 cdef inline double _fast_anova_kernel_grad(double[::1, :] A,
                                            double[::1, :] Ad,
-                                           double[:, ::1] P,
+                                           double[::1, :] P,
                                            Py_ssize_t s,
                                            int* indices,
                                            double* data,
                                            int nnz,
                                            unsigned int degree,
-                                           double[:, ::1] out):
+                                           double[::1, :] out):
 
 
     # computing the kernel value has the side effect of filling up A

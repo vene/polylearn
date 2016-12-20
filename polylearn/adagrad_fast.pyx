@@ -22,14 +22,14 @@ cdef inline void sync(double* param,
                       double grad_norm,
                       double learning_rate,
                       double beta,
-                      unsigned int t,
-                      unsigned int* dt):
-
-    dt[0] = t - last_seen[0]  # dt could be local. is that efficient?
-    if dt[0] > 0:
+                      unsigned int t):
+    cdef unsigned int dt
+    cdef double sq, correction
+    dt = t - last_seen[0]  # dt could be local. is that efficient?
+    if dt > 0:
         sq = sqrt(grad_norm)
         correction = sq / (learning_rate * beta + sq + 1e-6)
-        param[0] *= correction ** dt[0]
+        param[0] *= correction ** dt
         last_seen[0] = t
 
 
@@ -55,7 +55,7 @@ cdef inline void ada_update(double* param,
 
 def _fast_fm_adagrad(self,
                      double[::1] w,
-                     double[:, ::1] P not None,
+                     double[::1, :] P not None,
                      RowDataset X,
                      double[::1] y not None,
                      unsigned int degree,
@@ -74,10 +74,10 @@ def _fast_fm_adagrad(self,
 
     cdef bint has_callback = callback is not None
 
-    cdef unsigned int it, t, dt
+    cdef unsigned int it, t
     cdef Py_ssize_t i, s, j, jj
 
-    cdef double y_pred, update
+    cdef double y_pred
 
     # data pointers
     cdef double* data
@@ -85,25 +85,27 @@ def _fast_fm_adagrad(self,
     cdef int n_nz
 
     # working memory and DP tables
-    cdef double[:, ::1] P_grad_data
+    # cdef double[:, ::1] P_grad_data
+    cdef double[::1, :] P_grad_data
     cdef double[::1, :] A
     cdef double[::1, :] Ad
 
     # to avoid reallocating at every iteration, we allocate more than enough
 
-    P_grad_data = np.empty_like(P)
+    P_grad_data = np.empty_like(P, order='f')
     A = np.empty((n_features + 1, degree + 1), order='f')
     Ad = np.empty((n_features + 2, degree + 2), order='f')
 
     # adagrad bookkeeping
     cdef double[::1] w_grad_norms
-    cdef double[:, ::1] P_grad_norms
+    # cdef double[:, ::1] P_grad_norms
+    cdef double[::1, :] P_grad_norms
     cdef unsigned int[::1] w_last_seen
-    cdef unsigned int[:, ::1] P_last_seen
+    cdef unsigned int[::1, :] P_last_seen
     w_grad_norms = np.zeros_like(w)
-    P_grad_norms = np.zeros_like(P)
+    P_grad_norms = np.zeros_like(P, order='f')
     w_last_seen = np.zeros_like(w, dtype=np.uint32)
-    P_last_seen = np.zeros_like(P, dtype=np.uint32)
+    P_last_seen = np.zeros_like(P, dtype=np.uint32, order='f')
 
     t = 0
     for it in range(max_iter):
@@ -118,13 +120,13 @@ def _fast_fm_adagrad(self,
                 for jj in range(n_nz):
                     j = indices[jj]
                     sync(&w[j], &w_last_seen[j], w_grad_norms[j],
-                         learning_rate, alpha, t, &dt)
+                         learning_rate, alpha, t)
 
             for s in range(n_components):
                 for jj in range(n_nz):
                     j = indices[jj]
                     sync(&P[s, j], &P_last_seen[s, j], P_grad_norms[s, j],
-                         learning_rate, beta, t, &dt)
+                         learning_rate, beta, t)
 
             # compute predictions
             if fit_linear:
@@ -180,9 +182,8 @@ def _fast_fm_adagrad(self,
 
     # finalize
     for j in range(n_features):
-        sync(&w[j], &w_last_seen[j], w_grad_norms[j], learning_rate, alpha, t,
-             &dt)
+        sync(&w[j], &w_last_seen[j], w_grad_norms[j], learning_rate, alpha, t)
     for s in range(n_components):
         for j in range(n_features):
             sync(&P[s, j], &P_last_seen[s, j], P_grad_norms[s, j],
-                 learning_rate, beta, t, &dt)
+                 learning_rate, beta, t)

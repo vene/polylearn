@@ -10,7 +10,7 @@ from lightning.impl.dataset_fast cimport RowDataset
 # python-facing functions
 
 def _fast_anova_kernel_batch(RowDataset X,
-                             double[:, ::1] P,
+                             double[::1, :] P,
                              unsigned int degree,
                              double[:, ::1] K):
 
@@ -27,9 +27,9 @@ def _fast_anova_kernel_batch(RowDataset X,
 
     # allocate working memory for DP table
     cdef double[::1, :] A = array(shape=(n_features + 1, degree + 1),
-                                   itemsize=sizeof(double),
-                                   format='d',
-                                   mode='fortran')
+                                  itemsize=sizeof(double),
+                                  format='d',
+                                  mode='fortran')
 
     for i in range(n_samples):
         X.get_row_ptr(i, &indices, &data, &n_nz)
@@ -39,9 +39,9 @@ def _fast_anova_kernel_batch(RowDataset X,
 
 def _fast_anova_grad(RowDataset X,
                      Py_ssize_t i,
-                     double[:, ::1] P,
+                     double[::1, :] P,
                      unsigned int degree,
-                     double[:, ::1] out):
+                     double[::1, :] out):
 
     cdef Py_ssize_t n_components = P.shape[0]
     cdef Py_ssize_t n_features = P.shape[1]

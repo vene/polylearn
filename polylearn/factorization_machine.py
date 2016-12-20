@@ -96,6 +96,11 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
         if not (self.warm_start and hasattr(self, 'P_')):
             self.P_ = 0.01 * rng.randn(n_orders, self.n_components, n_features)
+        if 'ada' in self.solver:
+            # ensure each slice P[0], P[1]... is in F-order
+            self.P_ = np.transpose(self.P_, [1, 2, 0])
+            self.P_ = np.asfortranarray(self.P_)
+            self.P_ = np.transpose(self.P_, [2, 0, 1])
 
         if not (self.warm_start and hasattr(self, 'lams_')):
             if self.init_lambdas == 'ones':
