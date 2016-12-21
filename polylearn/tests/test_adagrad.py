@@ -1,7 +1,13 @@
 from nose.tools import assert_less_equal
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal, assert_raises_regex
+from numpy.testing import assert_array_almost_equal, assert_raises
+
+try:
+    from numpy.testing import assert_raises_regex
+    has_assert_raises_regex = True
+except ImportError:
+    has_assert_raises_regex = False
 
 import scipy.sparse as sp
 
@@ -191,11 +197,18 @@ def test_predict_sensible_error():
                                         fit_linear=False, fit_lower=None,
                                         max_iter=3, random_state=0)
     reg.fit(X, y)
-    assert_raises_regex(ValueError,
-                        "Incompatible dimensions",
-                        reg.predict,
-                        X[:, :2])
-    reg.P_ = np.transpose(reg.P_, [1, 2, 0])
-    assert_raises_regex(ValueError, "wrong order", reg.predict, X)
+    if has_assert_raises_regex:
+        assert_raises_regex(ValueError,
+                            "Incompatible dimensions",
+                            reg.predict,
+                            X[:, :2])
+        reg.P_ = np.transpose(reg.P_, [1, 2, 0])
+        assert_raises_regex(ValueError, "wrong order", reg.predict, X)
+    else:
+        # if assert_raises_regex is not available, use looser test
+        assert_raises(ValueError, reg.predict, X[:, :2])
+        reg.P_ = np.transpose(reg.P_, [1, 2, 0])
+        assert_raises(ValueError, reg.predict, X)
+
 
 

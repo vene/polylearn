@@ -6,7 +6,7 @@ import warnings
 from nose.tools import assert_less_equal, assert_equal
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_raises
 
 from sklearn.metrics import mean_squared_error
 from sklearn.utils.testing import assert_warns_message
@@ -340,3 +340,33 @@ def check_warm_start(degree):
 def test_warm_start():
     yield check_warm_start, 2
     yield check_warm_start, 3
+
+
+def test_lambdas():
+    """Check that +/-1 lambdas lead to better train error for even degree."""
+    y = _poly_predict(X, P, lams, kernel="anova", degree=2)
+
+    est = FactorizationMachineRegressor(degree=2, n_components=5,
+                                        fit_linear=False, fit_lower=None,
+                                        beta=0.1, random_state=0)
+    y_pred_ones = est.fit(X, y).predict(X)
+    err_ones = mean_squared_error(y, y_pred_ones)
+
+    est.set_params(init_lambdas='random_signs')
+    y_pred_signs = est.fit(X, y).predict(X)
+    err_signs = mean_squared_error(y, y_pred_signs)
+
+    assert_less_equal(err_signs, err_ones)
+
+
+def test_unsupported_errors():
+    y = _poly_predict(X, P, lams, kernel="anova", degree=2)
+
+    est = FactorizationMachineRegressor(degree=10, n_components=5,
+                                        fit_linear=False, fit_lower=None,
+                                        beta=0.1, random_state=0)
+
+    assert_raises(NotImplementedError, est.fit, X, y)
+
+    est.set_params(solver='adagrad', init_lambdas='random_signs')
+    assert_raises(NotImplementedError, est.fit, X, y)
