@@ -12,12 +12,16 @@ from polylearn import FactorizationMachineRegressor
 from .test_kernels import dumb_anova_grad
 
 
-def sg_adagrad_slow(P, X, y, degree, beta, max_iter, learning_rate):
+def sg_adagrad_slow(P, X, y, degree, beta, max_iter, learning_rate,
+                    scale_regularization=True):
 
     n_samples = X.shape[0]
     n_components = P.shape[0]
 
     grad_norms = np.zeros_like(P)
+
+    if not scale_regularization:
+        beta /= 0.5 * n_samples
 
     for it in range(max_iter):
 
@@ -92,13 +96,14 @@ def test_adagrad_decrease():
 def check_adagrad_fit(degree):
     y = _poly_predict(X, P, lams, kernel="anova", degree=degree)
 
-    est = FactorizationMachineRegressor(degree=degree, n_components=3,
+    est = FactorizationMachineRegressor(degree=degree, n_components=5,
                                         fit_linear=True, fit_lower=None,
                                         solver='adagrad',
                                         init_lambdas='ones',
-                                        max_iter=30000,
-                                        learning_rate=0.1,
-                                        beta=1e-8,
+                                        max_iter=2000,
+                                        learning_rate=0.25,
+                                        alpha=1e-10,
+                                        beta=1e-10,
                                         random_state=0)
 
     est.fit(X, y)
@@ -116,7 +121,7 @@ def test_adagrad_fit():
 
 def check_adagrad_same_as_slow(degree, sparse):
 
-    beta = 0.00001
+    beta = 1e-5
     lr = 0.01
 
     if sparse:
@@ -128,7 +133,7 @@ def check_adagrad_same_as_slow(degree, sparse):
 
     y = _poly_predict(X, P, lams, kernel="anova", degree=degree)
 
-    P_fast = 0.01 * np.random.RandomState(42).randn(1, P.shape[0], P.shape[1])
+    P_fast = np.random.RandomState(42).randn(1, P.shape[0], P.shape[1])
     P_slow = P_fast[0].copy()
 
     reg = FactorizationMachineRegressor(degree=degree, n_components=P.shape[0],

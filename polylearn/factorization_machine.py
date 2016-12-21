@@ -32,9 +32,10 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
     @abstractmethod
     def __init__(self, degree=2, loss='squared', n_components=2, alpha=1,
                  beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 learning_rate=0.001, solver='cd', warm_start=False,
-                 init_lambdas='ones', max_iter=10000, verbose=False,
-                 callback=None, n_calls=100, random_state=None):
+                 learning_rate=0.001, scale_regularization=True,
+                 solver='cd', warm_start=False, init_lambdas='ones',
+                 max_iter=10000, verbose=False, callback=None, n_calls=100,
+                 random_state=None):
         self.degree = degree
         self.loss = loss
         self.n_components = n_components
@@ -44,6 +45,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
         self.fit_lower = fit_lower
         self.fit_linear = fit_linear
         self.learning_rate = learning_rate
+        self.scale_regularization = scale_regularization
         self.solver = solver
         self.warm_start = warm_start
         self.init_lambdas = init_lambdas
@@ -82,9 +84,19 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
         X, y = self._check_X_y(X, y)
         X = self._augment(X)
-        n_features = X.shape[1]  # augmented
+        n_samples, n_features = X.shape  # augmented
         rng = check_random_state(self.random_state)
         loss_obj = self._get_loss(self.loss)
+
+        # Scale regularization params to make losses equivalent.
+        if self.scale_regularization and self.solver == 'cd':
+            alpha = 0.5 * self.alpha * n_samples
+            beta = 0.5 * self.beta * n_samples
+        elif not self.scale_regularization and self.solver == 'adagrad':
+            alpha = self.alpha / 0.5 * n_samples
+            beta = self.beta / 0.5 * n_samples
+        else:
+            alpha, beta = self.alpha, self.beta
 
         if not (self.warm_start and hasattr(self, 'w_')):
             self.w_ = np.zeros(n_features, dtype=np.double)
@@ -95,7 +107,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
             n_orders = 1
 
         if not (self.warm_start and hasattr(self, 'P_')):
-            self.P_ = 0.01 * rng.randn(n_orders, self.n_components, n_features)
+            self.P_ = rng.randn(n_orders, self.n_components, n_features)
         if 'ada' in self.solver:
             # ensure each slice P[0], P[1]... is in F-order
             self.P_ = np.transpose(self.P_, [1, 2, 0])
@@ -125,7 +137,7 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
             converged = _cd_direct_ho(self.P_, self.w_, dataset, X_col_norms,
                                       y, y_pred, self.lams_, self.degree,
-                                      self.alpha, self.beta, self.fit_linear,
+                                      alpha, beta, self.fit_linear,
                                       self.fit_lower == 'explicit', loss_obj,
                                       self.max_iter, self.tol, self.verbose)
             if not converged:
@@ -141,9 +153,9 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
             dataset = get_dataset(X, order="c")
             _fast_fm_adagrad(self, self.w_, self.P_[0], dataset, y,
-                             self.degree, self.alpha, self.beta,
-                             self.fit_linear, loss_obj, self.max_iter,
-                             self.learning_rate, self.callback, self.n_calls)
+                             self.degree, alpha, beta, self.fit_linear,
+                             loss_obj, self.max_iter, self.learning_rate,
+                             self.callback, self.n_calls)
         return self
 
     def _get_output(self, X):
@@ -212,8 +224,16 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
         coordinate descent. If False, the model can still capture linear
         effects if ``fit_lower == 'augment'``.
 
-    learning_rate: double, default: 0.001
+    learning_rate : double, default: 0.001
         Learning rate for 'adagrad' solver. Ignored by other solvers.
+
+    scale_regularization : boolean, default: True
+        Whether to adjust regularization according to the number of samples.
+        This helps if, after tuning regularization, the model will be retrained
+        on more data.
+
+        If set, the loss optimized is mean_i(l_i) + 0.5 || params || ^2
+        If not set, the loss becomes sum_i(l_i) + || params || ^ 2
 
     solver : {'cd'|'adagrad'}, default: 'cd'
         - 'cd': Uses a coordinate descent solver. Currently limited to
@@ -292,14 +312,15 @@ class FactorizationMachineRegressor(_BaseFactorizationMachine,
     """
     def __init__(self, degree=2, n_components=2, alpha=1, beta=1, tol=1e-6,
                  fit_lower='explicit', fit_linear=True, learning_rate=0.001,
-                 solver='cd', warm_start=False, init_lambdas='ones',
-                 max_iter=10000, verbose=False, callback=None, n_calls=100,
-                 random_state=None):
+                 scale_regularization=True, solver='cd', warm_start=False,
+                 init_lambdas='ones', max_iter=10000, verbose=False,
+                 callback=None, n_calls=100, random_state=None):
 
         super(FactorizationMachineRegressor, self).__init__(
             degree, 'squared', n_components, alpha, beta, tol, fit_lower,
-            fit_linear, learning_rate, solver, warm_start, init_lambdas,
-            max_iter, verbose, callback, n_calls, random_state)
+            fit_linear, learning_rate, scale_regularization, solver,
+            warm_start, init_lambdas, max_iter, verbose, callback, n_calls,
+            random_state)
 
 
 class FactorizationMachineClassifier(_BaseFactorizationMachine,
@@ -355,8 +376,16 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
         coordinate descent. If False, the model can still capture linear
         effects if ``fit_lower == 'augment'``.
 
-    learning_rate: double, default: 0.001
+    learning_rate : double, default: 0.001
         Learning rate for 'adagrad' solver. Ignored by other solvers.
+
+    scale_regularization : boolean, default: True
+        Whether to adjust regularization according to the number of samples.
+        This helps if, after tuning regularization, the model will be retrained
+        on more data.
+
+        If set, the loss optimized is mean_i(l_i) + 0.5 || params || ^2
+        If not set, the loss becomes sum_i(l_i) + || params || ^ 2
 
     solver : {'cd'|'adagrad'}, default: 'cd'
         - 'cd': Uses a coordinate descent solver. Currently limited to
@@ -436,11 +465,12 @@ class FactorizationMachineClassifier(_BaseFactorizationMachine,
 
     def __init__(self, degree=2, loss='squared_hinge', n_components=2, alpha=1,
                  beta=1, tol=1e-6, fit_lower='explicit', fit_linear=True,
-                 learning_rate=0.001, solver='cd', warm_start=False,
-                 init_lambdas='ones', max_iter=10000, verbose=False,
-                 callback=None, n_calls=100, random_state=None):
+                 learning_rate=0.001, scale_regularization=True, solver='cd',
+                 warm_start=False, init_lambdas='ones', max_iter=10000,
+                 verbose=False, callback=None, n_calls=100, random_state=None):
 
         super(FactorizationMachineClassifier, self).__init__(
             degree, loss, n_components, alpha, beta, tol, fit_lower,
-            fit_linear, learning_rate, solver, warm_start, init_lambdas,
-            max_iter, verbose, callback, n_calls, random_state)
+            fit_linear, learning_rate, scale_regularization, solver,
+            warm_start, init_lambdas, max_iter, verbose, callback, n_calls,
+            random_state)

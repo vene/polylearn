@@ -26,7 +26,7 @@ def cd_direct_slow(X, y, lams=None, degree=2, n_components=5, beta=1.,
     n_samples, n_features = X.shape
 
     rng = check_random_state(random_state)
-    P = 0.01 * rng.randn(n_components, n_features)
+    P = rng.randn(n_components, n_features)
     if lams is None:
         lams = np.ones(n_components)
 
@@ -222,6 +222,7 @@ def check_same_as_slow(degree):
     y = _poly_predict(X, P, lams, kernel="anova", degree=degree)
 
     reg = FactorizationMachineRegressor(degree=degree, n_components=5,
+                                        scale_regularization=False,
                                         fit_lower=None, fit_linear=False,
                                         beta=1, warm_start=False, tol=1e-3,
                                         max_iter=5, random_state=0)
@@ -303,13 +304,12 @@ def check_warm_start(degree):
     X_train, X_test = X[:10], X[10:]
     y_train, y_test = noisy_y[:10], noisy_y[10:]
 
-    beta_low = 0.5
-    beta = 0.1
-    beta_hi = 1
+    beta_low = 0.001
+    beta = 0.002
+    beta_hi = 0.003
     ref = FactorizationMachineRegressor(degree=degree, n_components=5,
                                         fit_linear=False, fit_lower=None,
-                                        beta=beta, max_iter=20000,
-                                        random_state=0)
+                                        beta=beta, random_state=0)
     ref.fit(X_train, y_train)
     y_pred_ref = ref.predict(X_test)
 
@@ -317,7 +317,7 @@ def check_warm_start(degree):
     from_low = FactorizationMachineRegressor(degree=degree, n_components=5,
                                              fit_lower=None, fit_linear=False,
                                              beta=beta_low, warm_start=True,
-                                             random_state=0)
+                                             max_iter=20000, random_state=0)
     from_low.fit(X_train, y_train)
     from_low.set_params(beta=beta)
     from_low.fit(X_train, y_train)
