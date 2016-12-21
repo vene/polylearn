@@ -108,11 +108,6 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
         if not (self.warm_start and hasattr(self, 'P_')):
             self.P_ = rng.randn(n_orders, self.n_components, n_features)
-        if 'ada' in self.solver:
-            # ensure each slice P[0], P[1]... is in F-order
-            self.P_ = np.transpose(self.P_, [1, 2, 0])
-            self.P_ = np.asfortranarray(self.P_)
-            self.P_ = np.transpose(self.P_, [2, 0, 1])
 
         if not (self.warm_start and hasattr(self, 'lams_')):
             if self.init_lambdas == 'ones':
@@ -144,21 +139,35 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
                 warnings.warn("Objective did not converge. Increase max_iter.")
 
         elif self.solver == 'adagrad':
-            if self.fit_lower == 'explicit' and self.degree > 2:
-                raise NotImplementedError("Adagrad solver currently doesn't "
-                                          "support `fit_lower='explicit'`.")
+            # if self.fit_lower == 'explicit' and self.degree > 2:
+            #     raise NotImplementedError("Adagrad solver currently doesn't "
+            #                               "support `fit_lower='explicit'`.")
+
             if self.init_lambdas != 'ones':
                 raise NotImplementedError("Adagrad solver currently doesn't "
                                           "support `init_lambdas != 'ones'`.")
 
             dataset = get_dataset(X, order="c")
-            _fast_fm_adagrad(self, self.w_, self.P_[0], dataset, y,
+            # P = np.transpose(self.P_, [1, 2, 0])
+            # P = np.asfortranarray(P)
+            # print(P.shape, P.flags)
+            #
+            self.P_ = np.asfortranarray(np.transpose(self.P_, [1, 2, 0]))
+            _fast_fm_adagrad(self, self.w_, self.P_, dataset, y,
                              self.degree, alpha, beta, self.fit_linear,
-                             loss_obj, self.max_iter, self.learning_rate,
+                             self.fit_lower == 'explicit', loss_obj,
+                             self.max_iter, self.learning_rate,
                              self.callback, self.n_calls)
+            self.P_ = np.transpose(self.P_, [2, 0, 1])
         return self
 
     def _get_output(self, X):
+        if self.P_.shape[1] != self.n_components:
+            raise ValueError("Model is fitted, but P_ is in the wrong order. "
+                             "This can happen if calling predict before "
+                             "learning is finalized (e.g., from a callback.) "
+                             "Make sure P_ has shape (n_orders, n_components, "
+                             "n_features.)")
         y_pred = _poly_predict(X, self.P_[0, :, :], self.lams_, kernel='anova',
                                degree=self.degree)
 

@@ -5,6 +5,7 @@
 
 
 from libc.math cimport sqrt
+from cython cimport view
 from lightning.impl.dataset_fast cimport RowDataset
 
 cimport numpy as np
@@ -55,13 +56,14 @@ cdef inline void ada_update(double* param,
 
 def _fast_fm_adagrad(self,
                      double[::1] w,
-                     double[::1, :] P not None,
+                     double[::1, :, :] P not None,
                      RowDataset X,
                      double[::1] y not None,
                      unsigned int degree,
                      double alpha,
                      double beta,
                      bint fit_linear,
+                     bint fit_lower,
                      LossFunction loss,
                      unsigned int max_iter,
                      double learning_rate,
@@ -75,7 +77,7 @@ def _fast_fm_adagrad(self,
     cdef bint has_callback = callback is not None
 
     cdef unsigned int it, t
-    cdef Py_ssize_t i, s, j, jj
+    cdef Py_ssize_t i, s, j, jj, o
 
     cdef double y_pred
 
@@ -86,7 +88,7 @@ def _fast_fm_adagrad(self,
 
     # working memory and DP tables
     # cdef double[:, ::1] P_grad_data
-    cdef double[::1, :] P_grad_data
+    cdef double[::1, :, :] P_grad_data
     cdef double[::1, :] A
     cdef double[::1, :] Ad
 
@@ -96,12 +98,11 @@ def _fast_fm_adagrad(self,
     A = np.empty((n_features + 1, degree + 1), order='f')
     Ad = np.empty((n_features + 2, degree + 2), order='f')
 
-    # adagrad bookkeeping
+    # adagrad bookkeeping, O(2 * n_params)
     cdef double[::1] w_grad_norms
-    # cdef double[:, ::1] P_grad_norms
-    cdef double[::1, :] P_grad_norms
+    cdef double[::1, :, :] P_grad_norms
     cdef unsigned int[::1] w_last_seen
-    cdef unsigned int[::1, :] P_last_seen
+    cdef unsigned int[::1, :, :] P_last_seen
     w_grad_norms = np.zeros_like(w)
     P_grad_norms = np.zeros_like(P, order='f')
     w_last_seen = np.zeros_like(w, dtype=np.uint32)
@@ -125,8 +126,18 @@ def _fast_fm_adagrad(self,
             for s in range(n_components):
                 for jj in range(n_nz):
                     j = indices[jj]
-                    sync(&P[s, j], &P_last_seen[s, j], P_grad_norms[s, j],
-                         learning_rate, beta, t)
+                    sync(&P[s, j, 0], &P_last_seen[s, j, 0],
+                         P_grad_norms[s, j, 0], learning_rate, beta, t)
+
+            if fit_lower:
+                for order in range(degree - 1, 1, -1):
+                    o = degree - order
+                    for s in range(n_components):
+                        for jj in range(n_nz):
+                            j = indices[jj]
+                            sync(&P[s, j, o], &P_last_seen[s, j, o],
+                                 P_grad_norms[s, j, o], learning_rate,
+                                 beta, t)
 
             # compute predictions
             if fit_linear:
@@ -137,13 +148,27 @@ def _fast_fm_adagrad(self,
             for s in range(n_components):
                 y_pred += _fast_anova_kernel_grad(A,
                                                   Ad,
-                                                  P,
+                                                  P[:, :, 0],
                                                   s,
                                                   indices,
                                                   data,
                                                   n_nz,
                                                   degree,
-                                                  P_grad_data)
+                                                  P_grad_data[:, :, 0])
+
+            if fit_lower:
+                for order in range(degree - 1, 1, -1):
+                    o = degree - order
+                    for s in range(n_components):
+                        y_pred += _fast_anova_kernel_grad(A,
+                                                          Ad,
+                                                          P[:, :, o],
+                                                          s,
+                                                          indices,
+                                                          data,
+                                                          n_nz,
+                                                          order,
+                                                          P_grad_data[:, :, o])
 
             # update
             lp = -loss.dloss(y[i], y_pred)
@@ -163,14 +188,30 @@ def _fast_fm_adagrad(self,
             for s in range(n_components):
                 for jj in range(n_nz):
                     j = indices[jj]
-                    ada_update(&P[s, j],
-                               &P_grad_norms[s, j],
-                               &P_last_seen[s, j],
-                               P_grad_data[s, jj],
+                    ada_update(&P[s, j, 0],
+                               &P_grad_norms[s, j, 0],
+                               &P_last_seen[s, j, 0],
+                               P_grad_data[s, jj, 0],
                                lp,
                                learning_rate,
                                beta,
                                t)
+
+            if fit_lower:
+                for order in range(degree - 1, 1, -1):
+                    o = degree - order
+                    for s in range(n_components):
+                        for jj in range(n_nz):
+                            j = indices[jj]
+                            ada_update(&P[s, j, o],
+                                       &P_grad_norms[s, j, o],
+                                       &P_last_seen[s, j, o],
+                                       P_grad_data[s, jj, o],
+                                       lp,
+                                       learning_rate,
+                                       beta,
+                                       t)
+
             t += 1
         # end for n_samples
 
@@ -185,5 +226,14 @@ def _fast_fm_adagrad(self,
         sync(&w[j], &w_last_seen[j], w_grad_norms[j], learning_rate, alpha, t)
     for s in range(n_components):
         for j in range(n_features):
-            sync(&P[s, j], &P_last_seen[s, j], P_grad_norms[s, j],
+            sync(&P[s, j, 0], &P_last_seen[s, j, 0], P_grad_norms[s, j, 0],
                  learning_rate, beta, t)
+    if fit_lower:
+        for order in range(degree - 1, 1, -1):
+            o = degree - order
+            for s in range(n_components):
+                for j in range(n_features):
+                    sync(&P[s, j, o], &P_last_seen[s, j, o],
+                         P_grad_norms[s, j, o], learning_rate,
+                         beta, t)
+

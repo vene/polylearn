@@ -117,7 +117,7 @@ def test_not_fitted():
     yield check_not_fitted, PolynomialNetworkRegressor
 
 
-def test_augment():
+def test_augment_linear_effects():
     # The following linear separable dataset cannot be modeled with just an FM
     X_evil = np.array([[-1, -1], [1, 1]])
     y_evil = np.array([-1, 1])
@@ -133,6 +133,27 @@ def test_augment():
     clf.fit(X_evil, y_evil)
     assert_equal(1.0, clf.score(X_evil, y_evil))
 
+
+def check_augment_second_order_effects(solver):
+    # Dataset that is only separable through second order interactions
+    X_evil = np.column_stack([X, [0, 0, 0, 0]])
+    clf = FactorizationMachineClassifier(degree=3,
+                                         beta=0.1,
+                                         learning_rate=0.1,
+                                         fit_linear=False,
+                                         fit_lower=None,
+                                         solver=solver,
+                                         random_state=0)
+    clf.fit(X_evil, y)
+    assert_equal(0.5, clf.score(X_evil, y))  # fails; all 3rd orders are 0
+    clf.set_params(fit_lower='explicit')
+    clf.fit(X_evil, y)
+    assert_equal(1, clf.score(X_evil, y))  # succeeds due to second order
+
+
+def test_augment_second_order_effects():
+    yield check_augment_second_order_effects, 'cd'
+    yield check_augment_second_order_effects, 'adagrad'
 
 def check_sparse(Clf):
     X_sp = csc_matrix(X)

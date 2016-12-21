@@ -128,7 +128,11 @@ def anova_grad(X, i, P, degree=2):
     return grad
 
 
-def _poly_predict(X, P, lams, kernel, degree=2):
+def _poly_predict(X, P, lams, kernel, degree=2, check_dim=True):
+    if X.shape[1] != P.shape[1]:
+        raise ValueError("Incompatible dimensions for X (data) and P "
+                         "(model parameters): Data has {0} features and "
+                         "P has {1} features".format(X.shape[1], P.shape[1]))
     if kernel == "anova":
         K = anova_kernel(X, P, degree)
     elif kernel == "poly":
