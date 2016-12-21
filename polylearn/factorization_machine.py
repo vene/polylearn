@@ -130,34 +130,27 @@ class _BaseFactorizationMachine(six.with_metaclass(ABCMeta, _BasePoly)):
 
             y_pred = self._get_output(X)
 
-            converged = _cd_direct_ho(self.P_, self.w_, dataset, X_col_norms,
-                                      y, y_pred, self.lams_, self.degree,
-                                      alpha, beta, self.fit_linear,
-                                      self.fit_lower == 'explicit', loss_obj,
-                                      self.max_iter, self.tol, self.verbose)
+            converged, self.n_iter_ = _cd_direct_ho(
+                self.P_, self.w_, dataset, X_col_norms, y, y_pred,
+                self.lams_, self.degree, alpha, beta, self.fit_linear,
+                self.fit_lower == 'explicit', loss_obj, self.max_iter,
+                self.tol, self.verbose)
             if not converged:
                 warnings.warn("Objective did not converge. Increase max_iter.")
 
         elif self.solver == 'adagrad':
-            # if self.fit_lower == 'explicit' and self.degree > 2:
-            #     raise NotImplementedError("Adagrad solver currently doesn't "
-            #                               "support `fit_lower='explicit'`.")
 
             if self.init_lambdas != 'ones':
                 raise NotImplementedError("Adagrad solver currently doesn't "
                                           "support `init_lambdas != 'ones'`.")
 
             dataset = get_dataset(X, order="c")
-            # P = np.transpose(self.P_, [1, 2, 0])
-            # P = np.asfortranarray(P)
-            # print(P.shape, P.flags)
-            #
+
             self.P_ = np.asfortranarray(np.transpose(self.P_, [1, 2, 0]))
-            _fast_fm_adagrad(self, self.w_, self.P_, dataset, y,
-                             self.degree, alpha, beta, self.fit_linear,
-                             self.fit_lower == 'explicit', loss_obj,
-                             self.max_iter, self.learning_rate,
-                             self.callback, self.n_calls)
+            self.n_iter_ = _fast_fm_adagrad(
+                self, self.w_, self.P_, dataset, y, self.degree, alpha,
+                beta, self.fit_linear, self.fit_lower == 'explicit', loss_obj,
+                self.max_iter, self.learning_rate, self.callback, self.n_calls)
             self.P_ = np.transpose(self.P_, [2, 0, 1])
         return self
 

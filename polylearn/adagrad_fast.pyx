@@ -236,4 +236,5 @@ def _fast_fm_adagrad(self,
                     sync(&P[s, j, o], &P_last_seen[s, j, o],
                          P_grad_norms[s, j, o], learning_rate,
                          beta, t)
+    return it
 

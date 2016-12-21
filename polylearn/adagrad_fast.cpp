@@ -4705,7 +4705,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                     sync(&P[s, j, o], &P_last_seen[s, j, o],
  *                          P_grad_norms[s, j, o], learning_rate,             # <<<<<<<<<<<<<<
  *                          beta, t)
- * 
+ *     return it
  */
           __pyx_t_93 = __pyx_v_s;
           __pyx_t_94 = __pyx_v_j;
@@ -4741,6 +4741,19 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  */
   }
 
+  /* "polylearn/adagrad_fast.pyx":239
+ *                          P_grad_norms[s, j, o], learning_rate,
+ *                          beta, t)
+ *     return it             # <<<<<<<<<<<<<<
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_8 = __Pyx_PyInt_From_unsigned_int(__pyx_v_it); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
+  goto __pyx_L0;
+
   /* "polylearn/adagrad_fast.pyx":57
  * 
  * 
@@ -4750,8 +4763,6 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
