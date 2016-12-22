@@ -2575,7 +2575,7 @@ static CYTHON_INLINE void __pyx_f_9polylearn_12adagrad_fast_ada_update(double *_
  *     update *= lp
  * 
  *     grad_norm[0] += update ** 2             # <<<<<<<<<<<<<<
- *     sq = sqrt(grad_norm[0])
+ *     cdef double sq = sqrt(grad_norm[0])
  * 
  */
   __pyx_t_1 = 0;
@@ -2584,7 +2584,7 @@ static CYTHON_INLINE void __pyx_f_9polylearn_12adagrad_fast_ada_update(double *_
   /* "polylearn/adagrad_fast.pyx":48
  * 
  *     grad_norm[0] += update ** 2
- *     sq = sqrt(grad_norm[0])             # <<<<<<<<<<<<<<
+ *     cdef double sq = sqrt(grad_norm[0])             # <<<<<<<<<<<<<<
  * 
  *     # p <- (p * sq - lr * update) / (lr * beta + sq)
  */
@@ -2849,6 +2849,7 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   Py_ssize_t __pyx_v_j;
   Py_ssize_t __pyx_v_jj;
   Py_ssize_t __pyx_v_o;
+  Py_ssize_t __pyx_v_order;
   double __pyx_v_y_pred;
   double *__pyx_v_data;
   int *__pyx_v_indices;
@@ -2860,7 +2861,6 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   __Pyx_memviewslice __pyx_v_P_grad_norms = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_w_last_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_P_last_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_v_order = NULL;
   double __pyx_v_lp;
   PyObject *__pyx_v_ret = NULL;
   PyObject *__pyx_r = NULL;
@@ -2896,7 +2896,7 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   Py_ssize_t __pyx_t_29;
   Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
-  PyObject *(*__pyx_t_32)(PyObject *);
+  Py_ssize_t __pyx_t_32;
   Py_ssize_t __pyx_t_33;
   Py_ssize_t __pyx_t_34;
   Py_ssize_t __pyx_t_35;
@@ -2907,9 +2907,9 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   Py_ssize_t __pyx_t_40;
   Py_ssize_t __pyx_t_41;
   Py_ssize_t __pyx_t_42;
-  Py_ssize_t __pyx_t_43;
-  __Pyx_memviewslice __pyx_t_44 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  unsigned int __pyx_t_45;
+  __Pyx_memviewslice __pyx_t_43 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_44;
+  Py_ssize_t __pyx_t_45;
   Py_ssize_t __pyx_t_46;
   Py_ssize_t __pyx_t_47;
   Py_ssize_t __pyx_t_48;
@@ -2936,9 +2936,9 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   Py_ssize_t __pyx_t_69;
   Py_ssize_t __pyx_t_70;
   Py_ssize_t __pyx_t_71;
-  Py_ssize_t __pyx_t_72;
+  int __pyx_t_72;
   Py_ssize_t __pyx_t_73;
-  int __pyx_t_74;
+  Py_ssize_t __pyx_t_74;
   Py_ssize_t __pyx_t_75;
   Py_ssize_t __pyx_t_76;
   Py_ssize_t __pyx_t_77;
@@ -2958,8 +2958,6 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
   Py_ssize_t __pyx_t_91;
   Py_ssize_t __pyx_t_92;
   Py_ssize_t __pyx_t_93;
-  Py_ssize_t __pyx_t_94;
-  Py_ssize_t __pyx_t_95;
   __Pyx_RefNannySetupContext("_fast_fm_adagrad", 0);
 
   /* "polylearn/adagrad_fast.pyx":73
@@ -3496,64 +3494,8 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                     o = degree - order
  *                     for s in range(n_components):
  */
-        __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_degree - 1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_GIVEREF(__pyx_t_4);
-        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
-        __Pyx_INCREF(__pyx_int_1);
-        __Pyx_GIVEREF(__pyx_int_1);
-        PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_int_1);
-        __Pyx_INCREF(__pyx_int_neg_1);
-        __Pyx_GIVEREF(__pyx_int_neg_1);
-        PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_int_neg_1);
-        __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
-          __pyx_t_3 = __pyx_t_4; __Pyx_INCREF(__pyx_t_3); __pyx_t_17 = 0;
-          __pyx_t_32 = NULL;
-        } else {
-          __pyx_t_17 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_32 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 133, __pyx_L1_error)
-        }
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        for (;;) {
-          if (likely(!__pyx_t_32)) {
-            if (likely(PyList_CheckExact(__pyx_t_3))) {
-              if (__pyx_t_17 >= PyList_GET_SIZE(__pyx_t_3)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_17); __Pyx_INCREF(__pyx_t_4); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
-              #else
-              __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_4);
-              #endif
-            } else {
-              if (__pyx_t_17 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_17); __Pyx_INCREF(__pyx_t_4); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
-              #else
-              __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_4);
-              #endif
-            }
-          } else {
-            __pyx_t_4 = __pyx_t_32(__pyx_t_3);
-            if (unlikely(!__pyx_t_4)) {
-              PyObject* exc_type = PyErr_Occurred();
-              if (exc_type) {
-                if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                else __PYX_ERR(0, 133, __pyx_L1_error)
-              }
-              break;
-            }
-            __Pyx_GOTREF(__pyx_t_4);
-          }
-          __Pyx_XDECREF_SET(__pyx_v_order, __pyx_t_4);
-          __pyx_t_4 = 0;
+        for (__pyx_t_17 = (__pyx_v_degree - 1); __pyx_t_17 > 1; __pyx_t_17-=1) {
+          __pyx_v_order = __pyx_t_17;
 
           /* "polylearn/adagrad_fast.pyx":134
  *             if fit_lower:
@@ -3562,14 +3504,7 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                     for s in range(n_components):
  *                         for jj in range(n_nz):
  */
-          __pyx_t_4 = __Pyx_PyInt_From_unsigned_int(__pyx_v_degree); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 134, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_8 = PyNumber_Subtract(__pyx_t_4, __pyx_v_order); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 134, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_21 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_21 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          __pyx_v_o = __pyx_t_21;
+          __pyx_v_o = (__pyx_v_degree - __pyx_v_order);
 
           /* "polylearn/adagrad_fast.pyx":135
  *                 for order in range(degree - 1, 1, -1):
@@ -3590,8 +3525,8 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                             sync(&P[s, j, o], &P_last_seen[s, j, o],
  */
             __pyx_t_16 = __pyx_v_n_nz;
-            for (__pyx_t_33 = 0; __pyx_t_33 < __pyx_t_16; __pyx_t_33+=1) {
-              __pyx_v_jj = __pyx_t_33;
+            for (__pyx_t_32 = 0; __pyx_t_32 < __pyx_t_16; __pyx_t_32+=1) {
+              __pyx_v_jj = __pyx_t_32;
 
               /* "polylearn/adagrad_fast.pyx":137
  *                     for s in range(n_components):
@@ -3609,12 +3544,12 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                                  P_grad_norms[s, j, o], learning_rate,
  *                                  beta, t)
  */
-              __pyx_t_34 = __pyx_v_s;
-              __pyx_t_35 = __pyx_v_j;
-              __pyx_t_36 = __pyx_v_o;
-              __pyx_t_37 = __pyx_v_s;
-              __pyx_t_38 = __pyx_v_j;
-              __pyx_t_39 = __pyx_v_o;
+              __pyx_t_33 = __pyx_v_s;
+              __pyx_t_34 = __pyx_v_j;
+              __pyx_t_35 = __pyx_v_o;
+              __pyx_t_36 = __pyx_v_s;
+              __pyx_t_37 = __pyx_v_j;
+              __pyx_t_38 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":139
  *                             j = indices[jj]
@@ -3623,9 +3558,9 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                                  beta, t)
  * 
  */
-              __pyx_t_40 = __pyx_v_s;
-              __pyx_t_41 = __pyx_v_j;
-              __pyx_t_42 = __pyx_v_o;
+              __pyx_t_39 = __pyx_v_s;
+              __pyx_t_40 = __pyx_v_j;
+              __pyx_t_41 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":138
  *                         for jj in range(n_nz):
@@ -3634,19 +3569,10 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  *                                  P_grad_norms[s, j, o], learning_rate,
  *                                  beta, t)
  */
-              __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_34)) ) + __pyx_t_35 * __pyx_v_P.strides[1]) ) + __pyx_t_36 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_37)) ) + __pyx_t_38 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_39 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_40)) ) + __pyx_t_41 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_42 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
+              __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_33)) ) + __pyx_t_34 * __pyx_v_P.strides[1]) ) + __pyx_t_35 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_36)) ) + __pyx_t_37 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_38 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_39)) ) + __pyx_t_40 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_41 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
             }
           }
-
-          /* "polylearn/adagrad_fast.pyx":133
- * 
- *             if fit_lower:
- *                 for order in range(degree - 1, 1, -1):             # <<<<<<<<<<<<<<
- *                     o = degree - order
- *                     for s in range(n_components):
- */
         }
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
         /* "polylearn/adagrad_fast.pyx":132
  *                          P_grad_norms[s, j, 0], learning_rate, beta, t)
@@ -3694,8 +3620,8 @@ static PyObject *__pyx_pf_9polylearn_12adagrad_fast__fast_fm_adagrad(CYTHON_UNUS
  * 
  *             for s in range(n_components):
  */
-          __pyx_t_43 = __pyx_v_j;
-          __pyx_v_y_pred = (__pyx_v_y_pred + ((*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_43)) ))) * (__pyx_v_data[__pyx_v_jj])));
+          __pyx_t_42 = __pyx_v_j;
+          __pyx_v_y_pred = (__pyx_v_y_pred + ((*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_42)) ))) * (__pyx_v_data[__pyx_v_jj])));
         }
 
         /* "polylearn/adagrad_fast.pyx":143
@@ -3749,7 +3675,7 @@ __pyx_t_7.strides[1] = __pyx_v_P.strides[1];
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_t_44.data = __pyx_v_P_grad_data.data;
+__pyx_t_43.data = __pyx_v_P_grad_data.data;
 
         /* "polylearn/adagrad_fast.pyx":157
  *                                                   n_nz,
@@ -3758,15 +3684,15 @@ __pyx_t_44.data = __pyx_v_P_grad_data.data;
  * 
  *             if fit_lower:
  */
-        __pyx_t_44.memview = __pyx_v_P_grad_data.memview;
-        __PYX_INC_MEMVIEW(&__pyx_t_44, 0);
-        __pyx_t_44.shape[0] = __pyx_v_P_grad_data.shape[0];
-__pyx_t_44.strides[0] = __pyx_v_P_grad_data.strides[0];
-    __pyx_t_44.suboffsets[0] = -1;
+        __pyx_t_43.memview = __pyx_v_P_grad_data.memview;
+        __PYX_INC_MEMVIEW(&__pyx_t_43, 0);
+        __pyx_t_43.shape[0] = __pyx_v_P_grad_data.shape[0];
+__pyx_t_43.strides[0] = __pyx_v_P_grad_data.strides[0];
+    __pyx_t_43.suboffsets[0] = -1;
 
-__pyx_t_44.shape[1] = __pyx_v_P_grad_data.shape[1];
-__pyx_t_44.strides[1] = __pyx_v_P_grad_data.strides[1];
-    __pyx_t_44.suboffsets[1] = -1;
+__pyx_t_43.shape[1] = __pyx_v_P_grad_data.shape[1];
+__pyx_t_43.strides[1] = __pyx_v_P_grad_data.strides[1];
+    __pyx_t_43.suboffsets[1] = -1;
 
 {
     Py_ssize_t __pyx_tmp_idx = 0;
@@ -3778,10 +3704,10 @@ __pyx_t_44.strides[1] = __pyx_v_P_grad_data.strides[1];
         PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 2)");
         __PYX_ERR(0, 157, __pyx_L1_error)
     }
-        __pyx_t_44.data += __pyx_tmp_idx * __pyx_tmp_stride;
+        __pyx_t_43.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel_grad(__pyx_v_A, __pyx_v_Ad, __pyx_t_7, __pyx_v_s, __pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_v_degree, __pyx_t_44));
+__pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel_grad(__pyx_v_A, __pyx_v_Ad, __pyx_t_7, __pyx_v_s, __pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_v_degree, __pyx_t_43));
 
         /* "polylearn/adagrad_fast.pyx":149
  * 
@@ -3793,9 +3719,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
         __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
         __pyx_t_7.memview = NULL;
         __pyx_t_7.data = NULL;
-        __PYX_XDEC_MEMVIEW(&__pyx_t_44, 1);
-        __pyx_t_44.memview = NULL;
-        __pyx_t_44.data = NULL;
+        __PYX_XDEC_MEMVIEW(&__pyx_t_43, 1);
+        __pyx_t_43.memview = NULL;
+        __pyx_t_43.data = NULL;
       }
 
       /* "polylearn/adagrad_fast.pyx":159
@@ -3815,64 +3741,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                     o = degree - order
  *                     for s in range(n_components):
  */
-        __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_degree - 1)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_8);
-        __Pyx_GIVEREF(__pyx_t_3);
-        PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_3);
-        __Pyx_INCREF(__pyx_int_1);
-        __Pyx_GIVEREF(__pyx_int_1);
-        PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_int_1);
-        __Pyx_INCREF(__pyx_int_neg_1);
-        __Pyx_GIVEREF(__pyx_int_neg_1);
-        PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_int_neg_1);
-        __pyx_t_3 = 0;
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-          __pyx_t_8 = __pyx_t_3; __Pyx_INCREF(__pyx_t_8); __pyx_t_17 = 0;
-          __pyx_t_32 = NULL;
-        } else {
-          __pyx_t_17 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 160, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
-          __pyx_t_32 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 160, __pyx_L1_error)
-        }
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        for (;;) {
-          if (likely(!__pyx_t_32)) {
-            if (likely(PyList_CheckExact(__pyx_t_8))) {
-              if (__pyx_t_17 >= PyList_GET_SIZE(__pyx_t_8)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_3 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_17); __Pyx_INCREF(__pyx_t_3); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
-              #else
-              __pyx_t_3 = PySequence_ITEM(__pyx_t_8, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              #endif
-            } else {
-              if (__pyx_t_17 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_17); __Pyx_INCREF(__pyx_t_3); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
-              #else
-              __pyx_t_3 = PySequence_ITEM(__pyx_t_8, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              #endif
-            }
-          } else {
-            __pyx_t_3 = __pyx_t_32(__pyx_t_8);
-            if (unlikely(!__pyx_t_3)) {
-              PyObject* exc_type = PyErr_Occurred();
-              if (exc_type) {
-                if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                else __PYX_ERR(0, 160, __pyx_L1_error)
-              }
-              break;
-            }
-            __Pyx_GOTREF(__pyx_t_3);
-          }
-          __Pyx_XDECREF_SET(__pyx_v_order, __pyx_t_3);
-          __pyx_t_3 = 0;
+        for (__pyx_t_17 = (__pyx_v_degree - 1); __pyx_t_17 > 1; __pyx_t_17-=1) {
+          __pyx_v_order = __pyx_t_17;
 
           /* "polylearn/adagrad_fast.pyx":161
  *             if fit_lower:
@@ -3881,14 +3751,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                     for s in range(n_components):
  *                         y_pred += _fast_anova_kernel_grad(A,
  */
-          __pyx_t_3 = __Pyx_PyInt_From_unsigned_int(__pyx_v_degree); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_4 = PyNumber_Subtract(__pyx_t_3, __pyx_v_order); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __pyx_t_21 = __Pyx_PyIndex_AsSsize_t(__pyx_t_4); if (unlikely((__pyx_t_21 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_v_o = __pyx_t_21;
+          __pyx_v_o = (__pyx_v_degree - __pyx_v_order);
 
           /* "polylearn/adagrad_fast.pyx":162
  *                 for order in range(degree - 1, 1, -1):
@@ -3908,16 +3771,16 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                                           s,
  *                                                           indices,
  */
-            __pyx_t_44.data = __pyx_v_P.data;
-            __pyx_t_44.memview = __pyx_v_P.memview;
-            __PYX_INC_MEMVIEW(&__pyx_t_44, 0);
-            __pyx_t_44.shape[0] = __pyx_v_P.shape[0];
-__pyx_t_44.strides[0] = __pyx_v_P.strides[0];
-    __pyx_t_44.suboffsets[0] = -1;
+            __pyx_t_43.data = __pyx_v_P.data;
+            __pyx_t_43.memview = __pyx_v_P.memview;
+            __PYX_INC_MEMVIEW(&__pyx_t_43, 0);
+            __pyx_t_43.shape[0] = __pyx_v_P.shape[0];
+__pyx_t_43.strides[0] = __pyx_v_P.strides[0];
+    __pyx_t_43.suboffsets[0] = -1;
 
-__pyx_t_44.shape[1] = __pyx_v_P.shape[1];
-__pyx_t_44.strides[1] = __pyx_v_P.strides[1];
-    __pyx_t_44.suboffsets[1] = -1;
+__pyx_t_43.shape[1] = __pyx_v_P.shape[1];
+__pyx_t_43.strides[1] = __pyx_v_P.strides[1];
+    __pyx_t_43.suboffsets[1] = -1;
 
 {
     Py_ssize_t __pyx_tmp_idx = __pyx_v_o;
@@ -3929,10 +3792,10 @@ __pyx_t_44.strides[1] = __pyx_v_P.strides[1];
         PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 2)");
         __PYX_ERR(0, 165, __pyx_L1_error)
     }
-        __pyx_t_44.data += __pyx_tmp_idx * __pyx_tmp_stride;
+        __pyx_t_43.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_t_45 = __Pyx_PyInt_As_unsigned_int(__pyx_v_order); if (unlikely((__pyx_t_45 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
+__pyx_t_7.data = __pyx_v_P_grad_data.data;
 
             /* "polylearn/adagrad_fast.pyx":171
  *                                                           n_nz,
@@ -3941,7 +3804,6 @@ __pyx_t_45 = __Pyx_PyInt_As_unsigned_int(__pyx_v_order); if (unlikely((__pyx_t_4
  * 
  *             # update
  */
-            __pyx_t_7.data = __pyx_v_P_grad_data.data;
             __pyx_t_7.memview = __pyx_v_P_grad_data.memview;
             __PYX_INC_MEMVIEW(&__pyx_t_7, 0);
             __pyx_t_7.shape[0] = __pyx_v_P_grad_data.shape[0];
@@ -3965,7 +3827,7 @@ __pyx_t_7.strides[1] = __pyx_v_P_grad_data.strides[1];
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel_grad(__pyx_v_A, __pyx_v_Ad, __pyx_t_44, __pyx_v_s, __pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_t_45, __pyx_t_7));
+__pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova_kernel_grad(__pyx_v_A, __pyx_v_Ad, __pyx_t_43, __pyx_v_s, __pyx_v_indices, __pyx_v_data, __pyx_v_n_nz, __pyx_v_order, __pyx_t_7));
 
             /* "polylearn/adagrad_fast.pyx":163
  *                     o = degree - order
@@ -3974,23 +3836,14 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                                           Ad,
  *                                                           P[:, :, o],
  */
-            __PYX_XDEC_MEMVIEW(&__pyx_t_44, 1);
-            __pyx_t_44.memview = NULL;
-            __pyx_t_44.data = NULL;
+            __PYX_XDEC_MEMVIEW(&__pyx_t_43, 1);
+            __pyx_t_43.memview = NULL;
+            __pyx_t_43.data = NULL;
             __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
             __pyx_t_7.memview = NULL;
             __pyx_t_7.data = NULL;
           }
-
-          /* "polylearn/adagrad_fast.pyx":160
- * 
- *             if fit_lower:
- *                 for order in range(degree - 1, 1, -1):             # <<<<<<<<<<<<<<
- *                     o = degree - order
- *                     for s in range(n_components):
- */
         }
-        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
         /* "polylearn/adagrad_fast.pyx":159
  *                                                   P_grad_data[:, :, 0])
@@ -4008,8 +3861,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  * 
  *             if fit_linear:
  */
-      __pyx_t_46 = __pyx_v_i;
-      __pyx_v_lp = (-((struct __pyx_vtabstruct_9polylearn_9loss_fast_LossFunction *)__pyx_v_loss->__pyx_vtab)->dloss(__pyx_v_loss, (*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_y.data) + __pyx_t_46)) ))), __pyx_v_y_pred));
+      __pyx_t_44 = __pyx_v_i;
+      __pyx_v_lp = (-((struct __pyx_vtabstruct_9polylearn_9loss_fast_LossFunction *)__pyx_v_loss->__pyx_vtab)->dloss(__pyx_v_loss, (*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_y.data) + __pyx_t_44)) ))), __pyx_v_y_pred));
 
       /* "polylearn/adagrad_fast.pyx":176
  *             lp = -loss.dloss(y[i], y_pred)
@@ -4048,7 +3901,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &w_grad_norms[j],
  *                                &w_last_seen[j],
  */
-          __pyx_t_47 = __pyx_v_j;
+          __pyx_t_45 = __pyx_v_j;
 
           /* "polylearn/adagrad_fast.pyx":180
  *                     j = indices[jj]
@@ -4057,7 +3910,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &w_last_seen[j],
  *                                data[jj],  # derivative wrt w[j] is x[j]
  */
-          __pyx_t_48 = __pyx_v_j;
+          __pyx_t_46 = __pyx_v_j;
 
           /* "polylearn/adagrad_fast.pyx":181
  *                     ada_update(&w[j],
@@ -4066,7 +3919,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                data[jj],  # derivative wrt w[j] is x[j]
  *                                lp,
  */
-          __pyx_t_49 = __pyx_v_j;
+          __pyx_t_47 = __pyx_v_j;
 
           /* "polylearn/adagrad_fast.pyx":179
  *                 for jj in range(n_nz):
@@ -4075,7 +3928,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &w_grad_norms[j],
  *                                &w_last_seen[j],
  */
-          __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_47)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w_grad_norms.data) + __pyx_t_48)) )))), (&(*((unsigned int *) ( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_w_last_seen.data) + __pyx_t_49)) )))), (__pyx_v_data[__pyx_v_jj]), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_alpha, __pyx_v_t);
+          __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_45)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w_grad_norms.data) + __pyx_t_46)) )))), (&(*((unsigned int *) ( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_w_last_seen.data) + __pyx_t_47)) )))), (__pyx_v_data[__pyx_v_jj]), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_alpha, __pyx_v_t);
         }
 
         /* "polylearn/adagrad_fast.pyx":176
@@ -4125,9 +3978,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &P_grad_norms[s, j, 0],
  *                                &P_last_seen[s, j, 0],
  */
-          __pyx_t_50 = __pyx_v_s;
-          __pyx_t_51 = __pyx_v_j;
-          __pyx_t_52 = 0;
+          __pyx_t_48 = __pyx_v_s;
+          __pyx_t_49 = __pyx_v_j;
+          __pyx_t_50 = 0;
 
           /* "polylearn/adagrad_fast.pyx":192
  *                     j = indices[jj]
@@ -4136,9 +3989,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &P_last_seen[s, j, 0],
  *                                P_grad_data[s, jj, 0],
  */
-          __pyx_t_53 = __pyx_v_s;
-          __pyx_t_54 = __pyx_v_j;
-          __pyx_t_55 = 0;
+          __pyx_t_51 = __pyx_v_s;
+          __pyx_t_52 = __pyx_v_j;
+          __pyx_t_53 = 0;
 
           /* "polylearn/adagrad_fast.pyx":193
  *                     ada_update(&P[s, j, 0],
@@ -4147,9 +4000,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                P_grad_data[s, jj, 0],
  *                                lp,
  */
-          __pyx_t_56 = __pyx_v_s;
-          __pyx_t_57 = __pyx_v_j;
-          __pyx_t_58 = 0;
+          __pyx_t_54 = __pyx_v_s;
+          __pyx_t_55 = __pyx_v_j;
+          __pyx_t_56 = 0;
 
           /* "polylearn/adagrad_fast.pyx":194
  *                                &P_grad_norms[s, j, 0],
@@ -4158,9 +4011,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                lp,
  *                                learning_rate,
  */
-          __pyx_t_59 = __pyx_v_s;
-          __pyx_t_60 = __pyx_v_jj;
-          __pyx_t_61 = 0;
+          __pyx_t_57 = __pyx_v_s;
+          __pyx_t_58 = __pyx_v_jj;
+          __pyx_t_59 = 0;
 
           /* "polylearn/adagrad_fast.pyx":191
  *                 for jj in range(n_nz):
@@ -4169,7 +4022,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                &P_grad_norms[s, j, 0],
  *                                &P_last_seen[s, j, 0],
  */
-          __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_50)) ) + __pyx_t_51 * __pyx_v_P.strides[1]) ) + __pyx_t_52 * __pyx_v_P.strides[2]) )))), (&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_53)) ) + __pyx_t_54 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_55 * __pyx_v_P_grad_norms.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_56)) ) + __pyx_t_57 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_58 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_data.data) + __pyx_t_59)) ) + __pyx_t_60 * __pyx_v_P_grad_data.strides[1]) ) + __pyx_t_61 * __pyx_v_P_grad_data.strides[2]) ))), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
+          __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_48)) ) + __pyx_t_49 * __pyx_v_P.strides[1]) ) + __pyx_t_50 * __pyx_v_P.strides[2]) )))), (&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_51)) ) + __pyx_t_52 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_53 * __pyx_v_P_grad_norms.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_54)) ) + __pyx_t_55 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_56 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_data.data) + __pyx_t_57)) ) + __pyx_t_58 * __pyx_v_P_grad_data.strides[1]) ) + __pyx_t_59 * __pyx_v_P_grad_data.strides[2]) ))), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
         }
       }
 
@@ -4190,64 +4043,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                     o = degree - order
  *                     for s in range(n_components):
  */
-        __pyx_t_8 = __Pyx_PyInt_From_long((__pyx_v_degree - 1)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_GIVEREF(__pyx_t_8);
-        PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_8);
-        __Pyx_INCREF(__pyx_int_1);
-        __Pyx_GIVEREF(__pyx_int_1);
-        PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_int_1);
-        __Pyx_INCREF(__pyx_int_neg_1);
-        __Pyx_GIVEREF(__pyx_int_neg_1);
-        PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_int_neg_1);
-        __pyx_t_8 = 0;
-        __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_8);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (likely(PyList_CheckExact(__pyx_t_8)) || PyTuple_CheckExact(__pyx_t_8)) {
-          __pyx_t_4 = __pyx_t_8; __Pyx_INCREF(__pyx_t_4); __pyx_t_17 = 0;
-          __pyx_t_32 = NULL;
-        } else {
-          __pyx_t_17 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_32 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 201, __pyx_L1_error)
-        }
-        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        for (;;) {
-          if (likely(!__pyx_t_32)) {
-            if (likely(PyList_CheckExact(__pyx_t_4))) {
-              if (__pyx_t_17 >= PyList_GET_SIZE(__pyx_t_4)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_8 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_17); __Pyx_INCREF(__pyx_t_8); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
-              #else
-              __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_8);
-              #endif
-            } else {
-              if (__pyx_t_17 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
-              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_17); __Pyx_INCREF(__pyx_t_8); __pyx_t_17++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
-              #else
-              __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_17); __pyx_t_17++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
-              __Pyx_GOTREF(__pyx_t_8);
-              #endif
-            }
-          } else {
-            __pyx_t_8 = __pyx_t_32(__pyx_t_4);
-            if (unlikely(!__pyx_t_8)) {
-              PyObject* exc_type = PyErr_Occurred();
-              if (exc_type) {
-                if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                else __PYX_ERR(0, 201, __pyx_L1_error)
-              }
-              break;
-            }
-            __Pyx_GOTREF(__pyx_t_8);
-          }
-          __Pyx_XDECREF_SET(__pyx_v_order, __pyx_t_8);
-          __pyx_t_8 = 0;
+        for (__pyx_t_17 = (__pyx_v_degree - 1); __pyx_t_17 > 1; __pyx_t_17-=1) {
+          __pyx_v_order = __pyx_t_17;
 
           /* "polylearn/adagrad_fast.pyx":202
  *             if fit_lower:
@@ -4256,14 +4053,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                     for s in range(n_components):
  *                         for jj in range(n_nz):
  */
-          __pyx_t_8 = __Pyx_PyInt_From_unsigned_int(__pyx_v_degree); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 202, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
-          __pyx_t_3 = PyNumber_Subtract(__pyx_t_8, __pyx_v_order); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          __pyx_t_21 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_21 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 202, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __pyx_v_o = __pyx_t_21;
+          __pyx_v_o = (__pyx_v_degree - __pyx_v_order);
 
           /* "polylearn/adagrad_fast.pyx":203
  *                 for order in range(degree - 1, 1, -1):
@@ -4284,8 +4074,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                             ada_update(&P[s, j, o],
  */
             __pyx_t_16 = __pyx_v_n_nz;
-            for (__pyx_t_33 = 0; __pyx_t_33 < __pyx_t_16; __pyx_t_33+=1) {
-              __pyx_v_jj = __pyx_t_33;
+            for (__pyx_t_32 = 0; __pyx_t_32 < __pyx_t_16; __pyx_t_32+=1) {
+              __pyx_v_jj = __pyx_t_32;
 
               /* "polylearn/adagrad_fast.pyx":205
  *                     for s in range(n_components):
@@ -4303,9 +4093,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                        &P_grad_norms[s, j, o],
  *                                        &P_last_seen[s, j, o],
  */
-              __pyx_t_62 = __pyx_v_s;
-              __pyx_t_63 = __pyx_v_j;
-              __pyx_t_64 = __pyx_v_o;
+              __pyx_t_60 = __pyx_v_s;
+              __pyx_t_61 = __pyx_v_j;
+              __pyx_t_62 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":207
  *                             j = indices[jj]
@@ -4314,9 +4104,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                        &P_last_seen[s, j, o],
  *                                        P_grad_data[s, jj, o],
  */
-              __pyx_t_65 = __pyx_v_s;
-              __pyx_t_66 = __pyx_v_j;
-              __pyx_t_67 = __pyx_v_o;
+              __pyx_t_63 = __pyx_v_s;
+              __pyx_t_64 = __pyx_v_j;
+              __pyx_t_65 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":208
  *                             ada_update(&P[s, j, o],
@@ -4325,9 +4115,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                        P_grad_data[s, jj, o],
  *                                        lp,
  */
-              __pyx_t_68 = __pyx_v_s;
-              __pyx_t_69 = __pyx_v_j;
-              __pyx_t_70 = __pyx_v_o;
+              __pyx_t_66 = __pyx_v_s;
+              __pyx_t_67 = __pyx_v_j;
+              __pyx_t_68 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":209
  *                                        &P_grad_norms[s, j, o],
@@ -4336,9 +4126,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                        lp,
  *                                        learning_rate,
  */
-              __pyx_t_71 = __pyx_v_s;
-              __pyx_t_72 = __pyx_v_jj;
-              __pyx_t_73 = __pyx_v_o;
+              __pyx_t_69 = __pyx_v_s;
+              __pyx_t_70 = __pyx_v_jj;
+              __pyx_t_71 = __pyx_v_o;
 
               /* "polylearn/adagrad_fast.pyx":206
  *                         for jj in range(n_nz):
@@ -4347,19 +4137,10 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                                        &P_grad_norms[s, j, o],
  *                                        &P_last_seen[s, j, o],
  */
-              __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_62)) ) + __pyx_t_63 * __pyx_v_P.strides[1]) ) + __pyx_t_64 * __pyx_v_P.strides[2]) )))), (&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_65)) ) + __pyx_t_66 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_67 * __pyx_v_P_grad_norms.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_68)) ) + __pyx_t_69 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_70 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_data.data) + __pyx_t_71)) ) + __pyx_t_72 * __pyx_v_P_grad_data.strides[1]) ) + __pyx_t_73 * __pyx_v_P_grad_data.strides[2]) ))), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
+              __pyx_f_9polylearn_12adagrad_fast_ada_update((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_60)) ) + __pyx_t_61 * __pyx_v_P.strides[1]) ) + __pyx_t_62 * __pyx_v_P.strides[2]) )))), (&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_63)) ) + __pyx_t_64 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_65 * __pyx_v_P_grad_norms.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_66)) ) + __pyx_t_67 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_68 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_data.data) + __pyx_t_69)) ) + __pyx_t_70 * __pyx_v_P_grad_data.strides[1]) ) + __pyx_t_71 * __pyx_v_P_grad_data.strides[2]) ))), __pyx_v_lp, __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
             }
           }
-
-          /* "polylearn/adagrad_fast.pyx":201
- * 
- *             if fit_lower:
- *                 for order in range(degree - 1, 1, -1):             # <<<<<<<<<<<<<<
- *                     o = degree - order
- *                     for s in range(n_components):
- */
         }
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
         /* "polylearn/adagrad_fast.pyx":200
  *                                t)
@@ -4387,14 +4168,14 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *             ret = callback(self, it)
  *             if ret is not None:
  */
-    __pyx_t_74 = (__pyx_v_has_callback != 0);
-    if (__pyx_t_74) {
+    __pyx_t_72 = (__pyx_v_has_callback != 0);
+    if (__pyx_t_72) {
     } else {
-      __pyx_t_1 = __pyx_t_74;
+      __pyx_t_1 = __pyx_t_72;
       goto __pyx_L46_bool_binop_done;
     }
-    __pyx_t_74 = (((__pyx_v_it % __pyx_v_n_calls) == 0) != 0);
-    __pyx_t_1 = __pyx_t_74;
+    __pyx_t_72 = (((__pyx_v_it % __pyx_v_n_calls) == 0) != 0);
+    __pyx_t_1 = __pyx_t_72;
     __pyx_L46_bool_binop_done:;
     if (__pyx_t_1) {
 
@@ -4466,8 +4247,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *     # end for max_iter
  */
       __pyx_t_1 = (__pyx_v_ret != Py_None);
-      __pyx_t_74 = (__pyx_t_1 != 0);
-      if (__pyx_t_74) {
+      __pyx_t_72 = (__pyx_t_1 != 0);
+      if (__pyx_t_72) {
 
         /* "polylearn/adagrad_fast.pyx":221
  *             ret = callback(self, it)
@@ -4516,10 +4297,10 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *     for s in range(n_components):
  *         for j in range(n_features):
  */
+    __pyx_t_73 = __pyx_v_j;
+    __pyx_t_74 = __pyx_v_j;
     __pyx_t_75 = __pyx_v_j;
-    __pyx_t_76 = __pyx_v_j;
-    __pyx_t_77 = __pyx_v_j;
-    __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_75)) )))), (&(*((unsigned int *) ( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_w_last_seen.data) + __pyx_t_76)) )))), (*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w_grad_norms.data) + __pyx_t_77)) ))), __pyx_v_learning_rate, __pyx_v_alpha, __pyx_v_t);
+    __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w.data) + __pyx_t_73)) )))), (&(*((unsigned int *) ( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_w_last_seen.data) + __pyx_t_74)) )))), (*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_w_grad_norms.data) + __pyx_t_75)) ))), __pyx_v_learning_rate, __pyx_v_alpha, __pyx_v_t);
   }
 
   /* "polylearn/adagrad_fast.pyx":227
@@ -4551,15 +4332,15 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                  learning_rate, beta, t)
  *     if fit_lower:
  */
-      __pyx_t_78 = __pyx_v_s;
-      __pyx_t_79 = __pyx_v_j;
-      __pyx_t_80 = 0;
-      __pyx_t_81 = __pyx_v_s;
-      __pyx_t_82 = __pyx_v_j;
-      __pyx_t_83 = 0;
-      __pyx_t_84 = __pyx_v_s;
-      __pyx_t_85 = __pyx_v_j;
-      __pyx_t_86 = 0;
+      __pyx_t_76 = __pyx_v_s;
+      __pyx_t_77 = __pyx_v_j;
+      __pyx_t_78 = 0;
+      __pyx_t_79 = __pyx_v_s;
+      __pyx_t_80 = __pyx_v_j;
+      __pyx_t_81 = 0;
+      __pyx_t_82 = __pyx_v_s;
+      __pyx_t_83 = __pyx_v_j;
+      __pyx_t_84 = 0;
 
       /* "polylearn/adagrad_fast.pyx":230
  *         for j in range(n_features):
@@ -4568,7 +4349,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *     if fit_lower:
  *         for order in range(degree - 1, 1, -1):
  */
-      __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_78)) ) + __pyx_t_79 * __pyx_v_P.strides[1]) ) + __pyx_t_80 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_81)) ) + __pyx_t_82 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_83 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_84)) ) + __pyx_t_85 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_86 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
+      __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_76)) ) + __pyx_t_77 * __pyx_v_P.strides[1]) ) + __pyx_t_78 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_79)) ) + __pyx_t_80 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_81 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_82)) ) + __pyx_t_83 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_84 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
     }
   }
 
@@ -4579,8 +4360,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *         for order in range(degree - 1, 1, -1):
  *             o = degree - order
  */
-  __pyx_t_74 = (__pyx_v_fit_lower != 0);
-  if (__pyx_t_74) {
+  __pyx_t_72 = (__pyx_v_fit_lower != 0);
+  if (__pyx_t_72) {
 
     /* "polylearn/adagrad_fast.pyx":232
  *                  learning_rate, beta, t)
@@ -4589,64 +4370,8 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *             o = degree - order
  *             for s in range(n_components):
  */
-    __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_degree - 1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 232, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4);
-    __Pyx_INCREF(__pyx_int_1);
-    __Pyx_GIVEREF(__pyx_int_1);
-    PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_int_1);
-    __Pyx_INCREF(__pyx_int_neg_1);
-    __Pyx_GIVEREF(__pyx_int_neg_1);
-    PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_int_neg_1);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
-      __pyx_t_8 = __pyx_t_4; __Pyx_INCREF(__pyx_t_8); __pyx_t_14 = 0;
-      __pyx_t_32 = NULL;
-    } else {
-      __pyx_t_14 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 232, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_32 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_32)) __PYX_ERR(0, 232, __pyx_L1_error)
-    }
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    for (;;) {
-      if (likely(!__pyx_t_32)) {
-        if (likely(PyList_CheckExact(__pyx_t_8))) {
-          if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_8)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
-          #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          #endif
-        } else {
-          if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
-          #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          #endif
-        }
-      } else {
-        __pyx_t_4 = __pyx_t_32(__pyx_t_8);
-        if (unlikely(!__pyx_t_4)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 232, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_4);
-      }
-      __Pyx_XDECREF_SET(__pyx_v_order, __pyx_t_4);
-      __pyx_t_4 = 0;
+    for (__pyx_t_14 = (__pyx_v_degree - 1); __pyx_t_14 > 1; __pyx_t_14-=1) {
+      __pyx_v_order = __pyx_t_14;
 
       /* "polylearn/adagrad_fast.pyx":233
  *     if fit_lower:
@@ -4655,14 +4380,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *             for s in range(n_components):
  *                 for j in range(n_features):
  */
-      __pyx_t_4 = __Pyx_PyInt_From_unsigned_int(__pyx_v_degree); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = PyNumber_Subtract(__pyx_t_4, __pyx_v_order); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 233, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_15 = __Pyx_PyIndex_AsSsize_t(__pyx_t_5); if (unlikely((__pyx_t_15 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_v_o = __pyx_t_15;
+      __pyx_v_o = (__pyx_v_degree - __pyx_v_order);
 
       /* "polylearn/adagrad_fast.pyx":234
  *         for order in range(degree - 1, 1, -1):
@@ -4693,12 +4411,12 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                          P_grad_norms[s, j, o], learning_rate,
  *                          beta, t)
  */
-          __pyx_t_87 = __pyx_v_s;
-          __pyx_t_88 = __pyx_v_j;
-          __pyx_t_89 = __pyx_v_o;
-          __pyx_t_90 = __pyx_v_s;
-          __pyx_t_91 = __pyx_v_j;
-          __pyx_t_92 = __pyx_v_o;
+          __pyx_t_85 = __pyx_v_s;
+          __pyx_t_86 = __pyx_v_j;
+          __pyx_t_87 = __pyx_v_o;
+          __pyx_t_88 = __pyx_v_s;
+          __pyx_t_89 = __pyx_v_j;
+          __pyx_t_90 = __pyx_v_o;
 
           /* "polylearn/adagrad_fast.pyx":237
  *                 for j in range(n_features):
@@ -4707,9 +4425,9 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                          beta, t)
  *     return it
  */
-          __pyx_t_93 = __pyx_v_s;
-          __pyx_t_94 = __pyx_v_j;
-          __pyx_t_95 = __pyx_v_o;
+          __pyx_t_91 = __pyx_v_s;
+          __pyx_t_92 = __pyx_v_j;
+          __pyx_t_93 = __pyx_v_o;
 
           /* "polylearn/adagrad_fast.pyx":236
  *             for s in range(n_components):
@@ -4718,19 +4436,10 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  *                          P_grad_norms[s, j, o], learning_rate,
  *                          beta, t)
  */
-          __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_87)) ) + __pyx_t_88 * __pyx_v_P.strides[1]) ) + __pyx_t_89 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_90)) ) + __pyx_t_91 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_92 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_93)) ) + __pyx_t_94 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_95 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
+          __pyx_f_9polylearn_12adagrad_fast_sync((&(*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P.data) + __pyx_t_85)) ) + __pyx_t_86 * __pyx_v_P.strides[1]) ) + __pyx_t_87 * __pyx_v_P.strides[2]) )))), (&(*((unsigned int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((unsigned int *) __pyx_v_P_last_seen.data) + __pyx_t_88)) ) + __pyx_t_89 * __pyx_v_P_last_seen.strides[1]) ) + __pyx_t_90 * __pyx_v_P_last_seen.strides[2]) )))), (*((double *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ ((char *) (((double *) __pyx_v_P_grad_norms.data) + __pyx_t_91)) ) + __pyx_t_92 * __pyx_v_P_grad_norms.strides[1]) ) + __pyx_t_93 * __pyx_v_P_grad_norms.strides[2]) ))), __pyx_v_learning_rate, __pyx_v_beta, __pyx_v_t);
         }
       }
-
-      /* "polylearn/adagrad_fast.pyx":232
- *                  learning_rate, beta, t)
- *     if fit_lower:
- *         for order in range(degree - 1, 1, -1):             # <<<<<<<<<<<<<<
- *             o = degree - order
- *             for s in range(n_components):
- */
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
     /* "polylearn/adagrad_fast.pyx":231
  *             sync(&P[s, j, 0], &P_last_seen[s, j, 0], P_grad_norms[s, j, 0],
@@ -4748,10 +4457,10 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_8 = __Pyx_PyInt_From_unsigned_int(__pyx_v_it); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 239, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __pyx_r = __pyx_t_8;
-  __pyx_t_8 = 0;
+  __pyx_t_4 = __Pyx_PyInt_From_unsigned_int(__pyx_v_it); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "polylearn/adagrad_fast.pyx":57
@@ -4774,7 +4483,7 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
   __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_44, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_43, 1);
   __Pyx_AddTraceback("polylearn.adagrad_fast._fast_fm_adagrad", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -4785,7 +4494,6 @@ __pyx_v_y_pred = (__pyx_v_y_pred + __pyx_f_9polylearn_12kernels_fast__fast_anova
   __PYX_XDEC_MEMVIEW(&__pyx_v_P_grad_norms, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_w_last_seen, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_P_last_seen, 1);
-  __Pyx_XDECREF(__pyx_v_order);
   __Pyx_XDECREF(__pyx_v_ret);
   __PYX_XDEC_MEMVIEW(&__pyx_v_w, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_P, 1);
@@ -20501,7 +20209,7 @@ static int __Pyx_InitCachedConstants(void) {
  *                      double[::1] w,
  *                      double[::1, :, :] P not None,
  */
-  __pyx_tuple__23 = PyTuple_Pack(40, __pyx_n_s_self, __pyx_n_s_w, __pyx_n_s_P, __pyx_n_s_X, __pyx_n_s_y, __pyx_n_s_degree, __pyx_n_s_alpha, __pyx_n_s_beta, __pyx_n_s_fit_linear, __pyx_n_s_fit_lower, __pyx_n_s_loss, __pyx_n_s_max_iter, __pyx_n_s_learning_rate, __pyx_n_s_callback, __pyx_n_s_n_calls, __pyx_n_s_n_samples, __pyx_n_s_n_components, __pyx_n_s_n_features, __pyx_n_s_has_callback, __pyx_n_s_it, __pyx_n_s_t, __pyx_n_s_i, __pyx_n_s_s, __pyx_n_s_j, __pyx_n_s_jj, __pyx_n_s_o, __pyx_n_s_y_pred, __pyx_n_s_data, __pyx_n_s_indices, __pyx_n_s_n_nz, __pyx_n_s_P_grad_data, __pyx_n_s_A, __pyx_n_s_Ad, __pyx_n_s_w_grad_norms, __pyx_n_s_P_grad_norms, __pyx_n_s_w_last_seen, __pyx_n_s_P_last_seen, __pyx_n_s_order, __pyx_n_s_lp, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(40, __pyx_n_s_self, __pyx_n_s_w, __pyx_n_s_P, __pyx_n_s_X, __pyx_n_s_y, __pyx_n_s_degree, __pyx_n_s_alpha, __pyx_n_s_beta, __pyx_n_s_fit_linear, __pyx_n_s_fit_lower, __pyx_n_s_loss, __pyx_n_s_max_iter, __pyx_n_s_learning_rate, __pyx_n_s_callback, __pyx_n_s_n_calls, __pyx_n_s_n_samples, __pyx_n_s_n_components, __pyx_n_s_n_features, __pyx_n_s_has_callback, __pyx_n_s_it, __pyx_n_s_t, __pyx_n_s_i, __pyx_n_s_s, __pyx_n_s_j, __pyx_n_s_jj, __pyx_n_s_o, __pyx_n_s_order, __pyx_n_s_y_pred, __pyx_n_s_data, __pyx_n_s_indices, __pyx_n_s_n_nz, __pyx_n_s_P_grad_data, __pyx_n_s_A, __pyx_n_s_Ad, __pyx_n_s_w_grad_norms, __pyx_n_s_P_grad_norms, __pyx_n_s_w_last_seen, __pyx_n_s_P_last_seen, __pyx_n_s_lp, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
   __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(15, 0, 40, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_vlad_code_polylearn_polyle, __pyx_n_s_fast_fm_adagrad, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 57, __pyx_L1_error)

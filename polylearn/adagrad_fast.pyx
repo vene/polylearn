@@ -45,7 +45,7 @@ cdef inline void ada_update(double* param,
     update *= lp
 
     grad_norm[0] += update ** 2
-    sq = sqrt(grad_norm[0])
+    cdef double sq = sqrt(grad_norm[0])
 
     # p <- (p * sq - lr * update) / (lr * beta + sq)
     param[0] *= sq
@@ -77,7 +77,7 @@ def _fast_fm_adagrad(self,
     cdef bint has_callback = callback is not None
 
     cdef unsigned int it, t
-    cdef Py_ssize_t i, s, j, jj, o
+    cdef Py_ssize_t i, s, j, jj, o, order
 
     cdef double y_pred
 
